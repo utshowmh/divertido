@@ -100,6 +100,16 @@ impl Lexer {
                     ));
                 }
 
+                ';' => {
+                    self.advance();
+                    tokens.push(Token::new(
+                        TokenType::Semicolon,
+                        &self.source[start..self.current],
+                        Object::Nil,
+                        self.line,
+                    ));
+                }
+
                 current_char => {
                     if current_char.is_digit(10) {
                         let number = self.extract_number()?;

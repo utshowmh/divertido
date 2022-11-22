@@ -29,8 +29,8 @@ fn run() -> Result<(), Error> {
                     let mut lexer = Lexer::new(&line);
                     let tokens = lexer.lex()?;
                     let mut parser = Parser::new(tokens);
-                    let expressions = parser.parse()?;
-                    println!("{:#?}", expressions);
+                    let statements = parser.parse()?;
+                    println!("{:#?}", statements);
 
                     line.clear();
                 }
@@ -43,8 +43,8 @@ fn run() -> Result<(), Error> {
                     let mut lexer = Lexer::new(&source);
                     let tokens = lexer.lex()?;
                     let mut parser = Parser::new(tokens);
-                    let expressions = parser.parse()?;
-                    println!("{:#?}", expressions);
+                    let statements = parser.parse()?;
+                    println!("{:#?}", statements);
                 } else {
                     print_help(Some(&format!("Could not open file '{}'", filepath)))
                 }

@@ -14,6 +14,8 @@ pub enum TokenType {
     Multiplication,
     Division,
 
+    Semicolon,
+
     EOF,
 }
 
@@ -29,6 +31,8 @@ impl Display for TokenType {
             Self::Minus => write!(f, "Minus"),
             Self::Multiplication => write!(f, "Multiplication"),
             Self::Division => write!(f, "Division"),
+
+            Self::Semicolon => write!(f, "Semicolon"),
 
             Self::EOF => write!(f, "EOF"),
         }

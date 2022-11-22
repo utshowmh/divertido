@@ -3,6 +3,7 @@ use crate::{
     expression::{
         BinaryExpression, Expression, GroupingExpression, LiteralExpression, UnaryExpression,
     },
+    statement::{ExpressionStatement, Statement},
     token::{Token, TokenType},
 };
 
@@ -16,14 +17,26 @@ impl Parser {
         Self { tokens, current: 0 }
     }
 
-    pub fn parse(&mut self) -> Result<Vec<Expression>, Error> {
-        let mut expressions = Vec::new();
+    pub fn parse(&mut self) -> Result<Vec<Statement>, Error> {
+        let mut statements = Vec::new();
 
         while !self.is_eof() {
-            expressions.push(self.term()?);
+            statements.push(self.statement()?);
         }
 
-        Ok(expressions)
+        Ok(statements)
+    }
+
+    fn statement(&mut self) -> Result<Statement, Error> {
+        let statement = self.expression()?;
+        self.consume(
+            TokenType::Semicolon,
+            &format!(
+                "Expected ';' after statement, found '{}'",
+                self.peek().lexeme
+            ),
+        )?;
+        Ok(Statement::Expression(ExpressionStatement::new(statement)))
     }
 
     fn expression(&mut self) -> Result<Expression, Error> {
@@ -75,10 +88,19 @@ impl Parser {
         } else if self.does_match(&[TokenType::OpenParen]) {
             self.advance();
             let expressions = self.expression()?;
-            self.consume(TokenType::CloseParen, "')' after expression")?;
+            self.consume(
+                TokenType::CloseParen,
+                &format!(
+                    "Expected ')' after expression, found '{}'",
+                    self.peek().lexeme
+                ),
+            )?;
             Ok(Expression::Grouping(GroupingExpression::new(expressions)))
         } else {
-            Err(self.error("'Number' or '('"))
+            Err(self.error(&format!(
+                "Expected 'Number' or '(', found '{}'",
+                self.peek().lexeme
+            )))
         }
     }
 
@@ -116,10 +138,6 @@ impl Parser {
     }
 
     fn error(&self, message: &str) -> Error {
-        Error::new(
-            ErrorType::ParsingError,
-            &format!("Expected {} found '{}'", message, self.peek().lexeme),
-            self.peek().line,
-        )
+        Error::new(ErrorType::ParsingError, message, self.peek().line)
     }
 }
