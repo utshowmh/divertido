@@ -6,6 +6,10 @@ use crate::object::Object;
 pub enum TokenType {
     Number,
 
+    Identifier,
+
+    Let,
+
     OpenParen,
     CloseParen,
 
@@ -23,6 +27,10 @@ impl Display for TokenType {
     fn fmt(&self, f: &mut Formatter) -> Result {
         match self {
             Self::Number => write!(f, "Number"),
+
+            Self::Identifier => write!(f, "Identifier"),
+
+            Self::Let => write!(f, "Let"),
 
             Self::OpenParen => write!(f, "OpenParen"),
             Self::CloseParen => write!(f, "CloseParen"),

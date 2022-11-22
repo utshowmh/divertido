@@ -1,9 +1,10 @@
 use crate::{
     error::{Error, ErrorType},
     expression::{
-        BinaryExpression, Expression, GroupingExpression, LiteralExpression, UnaryExpression,
+        BinaryExpression, Expression, GroupingExpression, LetExpression, LiteralExpression,
+        UnaryExpression,
     },
-    statement::{ExpressionStatement, Statement},
+    statement::{ExpressionStatement, LetStatement, Statement},
     token::{Token, TokenType},
 };
 
@@ -28,6 +29,31 @@ impl Parser {
     }
 
     fn statement(&mut self) -> Result<Statement, Error> {
+        match self.peek().ttype {
+            TokenType::Let => self.let_statement(),
+            _ => self.expression_statement(),
+        }
+    }
+
+    fn let_statement(&mut self) -> Result<Statement, Error> {
+        // self.consume(
+        //     TokenType::Let,
+        //     &format!("Expected 'let' found '{}'", self.peek().lexeme),
+        // )?;
+        self.advance();
+        let identifier = self.primary()?;
+        let value = self.expression()?;
+        self.consume(
+            TokenType::Semicolon,
+            &format!(
+                "Expected ';' after variable declaration, found '{}'",
+                self.peek().lexeme
+            ),
+        )?;
+        Ok(Statement::Let(LetStatement::new(identifier, value)))
+    }
+
+    fn expression_statement(&mut self) -> Result<Statement, Error> {
         let statement = self.expression()?;
         self.consume(
             TokenType::Semicolon,
@@ -85,6 +111,9 @@ impl Parser {
             Ok(Expression::Literal(LiteralExpression::new(
                 current_token.literal,
             )))
+        } else if self.does_match(&[TokenType::Identifier]) {
+            self.advance();
+            Ok(Expression::Let(LetExpression::new(current_token)))
         } else if self.does_match(&[TokenType::OpenParen]) {
             self.advance();
             let expressions = self.expression()?;
@@ -97,10 +126,7 @@ impl Parser {
             )?;
             Ok(Expression::Grouping(GroupingExpression::new(expressions)))
         } else {
-            Err(self.error(&format!(
-                "Expected 'Number' or '(', found '{}'",
-                self.peek().lexeme
-            )))
+            Err(self.error(&format!("Unexpected '{}'", self.peek().lexeme)))
         }
     }
 

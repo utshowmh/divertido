@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use crate::{
     error::{Error, ErrorType},
     object::Object,
@@ -9,6 +11,8 @@ pub struct Lexer {
     source_as_u8: Vec<u8>,
     source_len: usize,
 
+    keywords: HashMap<String, TokenType>,
+
     line: usize,
     current: usize,
 }
@@ -19,6 +23,9 @@ impl Lexer {
             source: source.to_string(),
             source_as_u8: source.as_bytes().to_vec(),
             source_len: source.len(),
+
+            keywords: HashMap::new(),
+
             line: 1,
             current: 0,
         }
@@ -26,11 +33,12 @@ impl Lexer {
 
     pub fn lex(&mut self) -> Result<Vec<Token>, Error> {
         let mut tokens = Vec::new();
+        self.init_keywords();
 
         while !self.is_eof() {
             let start = self.current;
 
-            match self.current_char() {
+            match self.peek() {
                 ' ' | '\t' | '\r' => {
                     self.advance();
                 }
@@ -110,17 +118,13 @@ impl Lexer {
                     ));
                 }
 
-                current_char => {
-                    if current_char.is_digit(10) {
-                        let number = self.extract_number()?;
-                        tokens.push(Token::new(
-                            TokenType::Number,
-                            &self.source[start..self.current],
-                            Object::Number(number),
-                            self.line,
-                        ));
+                peek => {
+                    if peek.is_digit(10) {
+                        tokens.push(self.extract_number()?);
+                    } else if peek.is_ascii_alphabetic() {
+                        tokens.push(self.extract_identifier()?);
                     } else {
-                        return Err(self.error(&format!("Invalid charecter '{}'", current_char)));
+                        return Err(self.error(&format!("Invalid charecter '{}'", peek)));
                     }
                 }
             }
@@ -135,7 +139,7 @@ impl Lexer {
         self.current += 1;
     }
 
-    fn current_char(&self) -> char {
+    fn peek(&self) -> char {
         self.source_as_u8[self.current] as char
     }
 
@@ -147,20 +151,54 @@ impl Lexer {
         }
     }
 
-    fn extract_number(&mut self) -> Result<f64, Error> {
-        let mut number = String::new();
-        while self.current_char().is_digit(10) && !self.is_eof() {
-            number.push(self.current_char());
+    fn extract_number(&mut self) -> Result<Token, Error> {
+        let mut number_str = String::new();
+        while self.peek().is_digit(10) && !self.is_eof() {
+            number_str.push(self.peek());
             self.advance();
         }
-        if let Ok(number) = number.parse() {
-            Ok(number)
+
+        if let Ok(number) = number_str.parse() {
+            Ok(Token::new(
+                TokenType::Number,
+                &number_str,
+                Object::Number(number),
+                self.line,
+            ))
         } else {
             Err(self.error("Expected a digit"))
         }
     }
 
+    fn extract_identifier(&mut self) -> Result<Token, Error> {
+        let mut identifier = String::new();
+        while self.peek().is_ascii_alphabetic() && !self.is_eof() {
+            identifier.push(self.peek());
+            self.advance();
+        }
+
+        if let Some(ttype) = self.keywords.get(&identifier) {
+            Ok(Token::new(
+                ttype.clone(),
+                &identifier,
+                Object::Nil,
+                self.line,
+            ))
+        } else {
+            Ok(Token::new(
+                TokenType::Identifier,
+                &identifier,
+                Object::Nil,
+                self.line,
+            ))
+        }
+    }
+
     fn error(&self, message: &str) -> Error {
         Error::new(ErrorType::LexingError, message, self.line)
+    }
+
+    fn init_keywords(&mut self) {
+        self.keywords.insert("let".to_string(), TokenType::Let);
     }
 }

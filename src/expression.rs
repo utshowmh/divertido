@@ -2,10 +2,24 @@ use crate::{object::Object, token::Token};
 
 #[derive(Debug)]
 pub enum Expression {
+    Let(LetExpression),
     Literal(LiteralExpression),
     Unray(UnaryExpression),
     Binary(BinaryExpression),
     Grouping(GroupingExpression),
+}
+
+#[derive(Debug)]
+pub struct LetExpression {
+    _identifier: Token,
+}
+
+impl LetExpression {
+    pub fn new(identifier: Token) -> Self {
+        Self {
+            _identifier: identifier,
+        }
+    }
 }
 
 #[derive(Debug)]
