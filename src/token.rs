@@ -20,6 +20,13 @@ pub enum TokenType {
 
     Semicolon,
 
+    Equal,
+    EqualEqual,
+    Greater,
+    GreaterEqual,
+    Less,
+    LessEqual,
+
     EOF,
 }
 
@@ -41,6 +48,13 @@ impl Display for TokenType {
             Self::Division => write!(f, "Division"),
 
             Self::Semicolon => write!(f, "Semicolon"),
+
+            Self::Equal => write!(f, "Equal"),
+            Self::EqualEqual => write!(f, "EqualEqual"),
+            Self::Greater => write!(f, "Greater"),
+            Self::GreaterEqual => write!(f, "GreaterEqual"),
+            Self::Less => write!(f, "Less"),
+            Self::LessEqual => write!(f, "LessEqual"),
 
             Self::EOF => write!(f, "EOF"),
         }

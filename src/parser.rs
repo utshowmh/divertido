@@ -36,12 +36,15 @@ impl Parser {
     }
 
     fn let_statement(&mut self) -> Result<Statement, Error> {
-        // self.consume(
-        //     TokenType::Let,
-        //     &format!("Expected 'let' found '{}'", self.peek().lexeme),
-        // )?;
         self.advance();
         let identifier = self.primary()?;
+        self.consume(
+            TokenType::Equal,
+            &format!(
+                "Expected '=' after identifier, found '{}'",
+                self.peek().lexeme
+            ),
+        )?;
         let value = self.expression()?;
         self.consume(
             TokenType::Semicolon,
@@ -66,7 +69,25 @@ impl Parser {
     }
 
     fn expression(&mut self) -> Result<Expression, Error> {
-        self.term()
+        self.comparison()
+    }
+
+    fn comparison(&mut self) -> Result<Expression, Error> {
+        let mut left = self.term()?;
+
+        if self.does_match(&[
+            TokenType::EqualEqual,
+            TokenType::Greater,
+            TokenType::GreaterEqual,
+            TokenType::Less,
+            TokenType::LessEqual,
+        ]) {
+            let operator = self.next_token();
+            let right = self.factor()?;
+            left = Expression::Binary(BinaryExpression::new(left, operator, right));
+        }
+
+        Ok(left)
     }
 
     fn term(&mut self) -> Result<Expression, Error> {

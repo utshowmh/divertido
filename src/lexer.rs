@@ -118,6 +118,66 @@ impl Lexer {
                     ));
                 }
 
+                '=' => {
+                    self.advance();
+                    if self.peek() == '=' {
+                        self.advance();
+                        tokens.push(Token::new(
+                            TokenType::EqualEqual,
+                            &self.source[start..self.current],
+                            Object::Nil,
+                            self.line,
+                        ));
+                    } else {
+                        tokens.push(Token::new(
+                            TokenType::Equal,
+                            &self.source[start..self.current],
+                            Object::Nil,
+                            self.line,
+                        ));
+                    }
+                }
+
+                '>' => {
+                    self.advance();
+                    if self.peek() == '=' {
+                        self.advance();
+                        tokens.push(Token::new(
+                            TokenType::GreaterEqual,
+                            &self.source[start..self.current],
+                            Object::Nil,
+                            self.line,
+                        ));
+                    } else {
+                        tokens.push(Token::new(
+                            TokenType::Greater,
+                            &self.source[start..self.current],
+                            Object::Nil,
+                            self.line,
+                        ));
+                    }
+                }
+
+                '<' => {
+                    self.advance();
+                    if self.peek() == '=' {
+                        self.advance();
+                        tokens.push(Token::new(
+                            TokenType::LessEqual,
+                            &self.source[start..self.current],
+                            Object::Nil,
+                            self.line,
+                        ));
+                    } else {
+                        tokens.push(Token::new(
+                            TokenType::Less,
+                            &self.source[start..self.current],
+                            Object::Nil,
+                            self.line,
+                        ));
+                    }
+                }
+
                 peek => {
                     if peek.is_digit(10) {
                         tokens.push(self.extract_number()?);

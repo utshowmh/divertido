@@ -28,6 +28,7 @@ fn run() -> Result<(), Error> {
 
                     let mut lexer = Lexer::new(&line);
                     let tokens = lexer.lex()?;
+                    println!("{:#?}", &tokens);
                     let mut parser = Parser::new(tokens);
                     let statements = parser.parse()?;
                     println!("{:#?}", statements);
