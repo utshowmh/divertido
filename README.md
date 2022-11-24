@@ -1,3 +1,3 @@
-# DIVERTIDA
+# DIVERTIDO
 
-## Divertida is an interpreted prorgaming language
+## Divertido is an interpreted prorgaming language
