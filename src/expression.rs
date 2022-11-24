@@ -2,7 +2,7 @@ use crate::{object::Object, token::Token};
 
 #[derive(Debug)]
 pub enum Expression {
-    Let(LetExpression),
+    Variable(VariableExpression),
     Literal(LiteralExpression),
     Unray(UnaryExpression),
     Binary(BinaryExpression),
@@ -10,11 +10,11 @@ pub enum Expression {
 }
 
 #[derive(Debug)]
-pub struct LetExpression {
+pub struct VariableExpression {
     _identifier: Token,
 }
 
-impl LetExpression {
+impl VariableExpression {
     pub fn new(identifier: Token) -> Self {
         Self {
             _identifier: identifier,

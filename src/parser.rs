@@ -1,8 +1,8 @@
 use crate::{
     error::{Error, ErrorType},
     expression::{
-        BinaryExpression, Expression, GroupingExpression, LetExpression, LiteralExpression,
-        UnaryExpression,
+        BinaryExpression, Expression, GroupingExpression, LiteralExpression, UnaryExpression,
+        VariableExpression,
     },
     statement::{ExpressionStatement, LetStatement, Statement},
     token::{Token, TokenType},
@@ -134,7 +134,7 @@ impl Parser {
             )))
         } else if self.does_match(&[TokenType::Identifier]) {
             self.advance();
-            Ok(Expression::Let(LetExpression::new(current_token)))
+            Ok(Expression::Variable(VariableExpression::new(current_token)))
         } else if self.does_match(&[TokenType::OpenParen]) {
             self.advance();
             let expressions = self.expression()?;
