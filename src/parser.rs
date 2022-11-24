@@ -37,7 +37,13 @@ impl Parser {
 
     fn let_statement(&mut self) -> Result<Statement, Error> {
         self.advance();
-        let identifier = self.primary()?;
+        let identifier = self.consume(
+            TokenType::Identifier,
+            &format!(
+                "Expected identifier after 'let', found '{}'",
+                self.peek().lexeme
+            ),
+        )?;
         self.consume(
             TokenType::Equal,
             &format!(
@@ -175,10 +181,9 @@ impl Parser {
         ttypes.contains(&self.peek().ttype)
     }
 
-    fn consume(&mut self, ttype: TokenType, message: &str) -> Result<(), Error> {
+    fn consume(&mut self, ttype: TokenType, message: &str) -> Result<Token, Error> {
         if self.peek().ttype == ttype {
-            self.advance();
-            Ok(())
+            Ok(self.next_token())
         } else {
             Err(self.error(message))
         }

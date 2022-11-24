@@ -1,4 +1,12 @@
-use crate::{object::Object, token::Token};
+use crate::{error::Error, object::Object, token::Token};
+
+pub trait ExpressionVisitor<T> {
+    fn visit_variable_expression(&self, expression: &VariableExpression) -> Result<T, Error>;
+    fn visit_literal_expression(&self, expression: &LiteralExpression) -> Result<T, Error>;
+    fn visit_unary_expression(&self, expression: &UnaryExpression) -> Result<T, Error>;
+    fn visit_binary_expression(&self, expression: &BinaryExpression) -> Result<T, Error>;
+    fn visit_gruping_expression(&self, expression: &GroupingExpression) -> Result<T, Error>;
+}
 
 #[derive(Debug)]
 pub enum Expression {
@@ -9,71 +17,101 @@ pub enum Expression {
     Grouping(GroupingExpression),
 }
 
+impl Expression {
+    pub fn accept<T>(&self, visitor: &dyn ExpressionVisitor<T>) -> Result<T, Error> {
+        match self {
+            Self::Variable(expression) => expression.accept(visitor),
+            Self::Literal(expression) => expression.accept(visitor),
+            Self::Unray(expression) => expression.accept(visitor),
+            Self::Binary(expression) => expression.accept(visitor),
+            Self::Grouping(expression) => expression.accept(visitor),
+        }
+    }
+}
+
 #[derive(Debug)]
 pub struct VariableExpression {
-    _identifier: Token,
+    pub identifier: Token,
 }
 
 impl VariableExpression {
     pub fn new(identifier: Token) -> Self {
-        Self {
-            _identifier: identifier,
-        }
+        Self { identifier }
+    }
+
+    pub fn accept<T>(&self, visitor: &dyn ExpressionVisitor<T>) -> Result<T, Error> {
+        visitor.visit_variable_expression(self)
     }
 }
 
 #[derive(Debug)]
 pub struct LiteralExpression {
-    _literal: Object,
+    pub literal: Object,
 }
 
 impl LiteralExpression {
     pub fn new(literal: Object) -> Self {
-        Self { _literal: literal }
+        Self { literal }
+    }
+
+    pub fn accept<T>(&self, visitor: &dyn ExpressionVisitor<T>) -> Result<T, Error> {
+        visitor.visit_literal_expression(self)
     }
 }
 
 #[derive(Debug)]
 pub struct UnaryExpression {
-    _operator: Token,
-    _right: Box<Expression>,
+    pub operator: Token,
+    pub right: Box<Expression>,
 }
 
 impl UnaryExpression {
     pub fn new(operator: Token, right: Expression) -> Self {
         Self {
-            _operator: operator,
-            _right: Box::new(right),
+            operator,
+            right: Box::new(right),
         }
+    }
+
+    pub fn accept<T>(&self, visitor: &dyn ExpressionVisitor<T>) -> Result<T, Error> {
+        visitor.visit_unary_expression(self)
     }
 }
 
 #[derive(Debug)]
 pub struct BinaryExpression {
-    _left: Box<Expression>,
-    _operator: Token,
-    _right: Box<Expression>,
+    pub left: Box<Expression>,
+    pub operator: Token,
+    pub right: Box<Expression>,
 }
 
 impl BinaryExpression {
     pub fn new(left: Expression, operator: Token, right: Expression) -> Self {
         Self {
-            _left: Box::new(left),
-            _operator: operator,
-            _right: Box::new(right),
+            left: Box::new(left),
+            operator,
+            right: Box::new(right),
         }
+    }
+
+    pub fn accept<T>(&self, visitor: &dyn ExpressionVisitor<T>) -> Result<T, Error> {
+        visitor.visit_binary_expression(self)
     }
 }
 
 #[derive(Debug)]
 pub struct GroupingExpression {
-    _expressions: Box<Expression>,
+    pub expressions: Box<Expression>,
 }
 
 impl GroupingExpression {
     pub fn new(expressions: Expression) -> Self {
         Self {
-            _expressions: Box::new(expressions),
+            expressions: Box::new(expressions),
         }
+    }
+
+    pub fn accept<T>(&self, visitor: &dyn ExpressionVisitor<T>) -> Result<T, Error> {
+        visitor.visit_gruping_expression(self)
     }
 }

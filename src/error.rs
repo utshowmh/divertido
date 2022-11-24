@@ -6,6 +6,7 @@ use std::{
 pub enum ErrorType {
     LexingError,
     ParsingError,
+    RuntimeError,
 }
 
 impl Display for ErrorType {
@@ -13,6 +14,7 @@ impl Display for ErrorType {
         match self {
             Self::LexingError => write!(f, "LexingError"),
             Self::ParsingError => write!(f, "ParsingError"),
+            Self::RuntimeError => write!(f, "RuntimeError"),
         }
     }
 }

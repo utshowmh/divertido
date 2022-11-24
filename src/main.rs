@@ -5,7 +5,7 @@ use std::{
     process::exit,
 };
 
-use divertido::{error::Error, lexer::Lexer, parser::Parser};
+use divertido::{error::Error, interpreter::Interpreter, lexer::Lexer, parser::Parser};
 
 fn main() {
     run().unwrap_or_else(|error| error.throw());
@@ -28,10 +28,10 @@ fn run() -> Result<(), Error> {
 
                     let mut lexer = Lexer::new(&line);
                     let tokens = lexer.lex()?;
-                    println!("{:#?}", &tokens);
                     let mut parser = Parser::new(tokens);
                     let statements = parser.parse()?;
-                    println!("{:#?}", statements);
+                    let mut interpreter = Interpreter::new();
+                    interpreter.run(statements)?;
 
                     line.clear();
                 }
@@ -45,7 +45,8 @@ fn run() -> Result<(), Error> {
                     let tokens = lexer.lex()?;
                     let mut parser = Parser::new(tokens);
                     let statements = parser.parse()?;
-                    println!("{:#?}", statements);
+                    let mut interpreter = Interpreter::new();
+                    interpreter.run(statements)?;
                 } else {
                     print_help(Some(&format!("Could not open file '{}'", filepath)))
                 }
