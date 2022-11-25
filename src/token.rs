@@ -9,6 +9,9 @@ pub enum TokenType {
     Identifier,
 
     Let,
+    Nil,
+    True,
+    False,
 
     OpenParen,
     CloseParen,
@@ -38,6 +41,9 @@ impl Display for TokenType {
             Self::Identifier => write!(f, "Identifier"),
 
             Self::Let => write!(f, "Let"),
+            Self::Nil => write!(f, "Nil"),
+            Self::True => write!(f, "True"),
+            Self::False => write!(f, "False"),
 
             Self::OpenParen => write!(f, "OpenParen"),
             Self::CloseParen => write!(f, "CloseParen"),

@@ -115,6 +115,40 @@ impl ExpressionVisitor<Object> for Interpreter {
                     expression.operator.line,
                 )),
             },
+            TokenType::EqualEqual => match (&left, &right) {
+                (Object::Number(x), Object::Number(y)) => Ok(Object::Boolean(x == y)),
+                (Object::Boolean(x), Object::Boolean(y)) => Ok(Object::Boolean(x == y)),
+                (Object::Nil, Object::Nil) => Ok(Object::Boolean(true)),
+                (_, _) => Ok(Object::Boolean(false)),
+            },
+            TokenType::Greater => match (&left, &right) {
+                (Object::Number(x), Object::Number(y)) => Ok(Object::Boolean(x > y)),
+                (_, _) => Err(self.error(
+                    &format!("Expected 'number > number found '{} > {}'", left, right),
+                    expression.operator.line,
+                )),
+            },
+            TokenType::GreaterEqual => match (&left, &right) {
+                (Object::Number(x), Object::Number(y)) => Ok(Object::Boolean(x >= y)),
+                (_, _) => Err(self.error(
+                    &format!("Expected 'number >= number', found '{} >= {}'", left, right),
+                    expression.operator.line,
+                )),
+            },
+            TokenType::Less => match (&left, &right) {
+                (Object::Number(x), Object::Number(y)) => Ok(Object::Boolean(x < y)),
+                (_, _) => Err(self.error(
+                    &format!("Expected 'number < number', found '{} < {}'", left, right),
+                    expression.operator.line,
+                )),
+            },
+            TokenType::LessEqual => match (&left, &right) {
+                (Object::Number(x), Object::Number(y)) => Ok(Object::Boolean(x <= y)),
+                (_, _) => Err(self.error(
+                    &format!("Expected 'number <= number', found '{} <= {}'", left, right),
+                    expression.operator.line,
+                )),
+            },
             _ => Err(self.error(
                 &format!(
                     "Expected (+ | - | * | /), found '{}'",

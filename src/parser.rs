@@ -133,7 +133,12 @@ impl Parser {
     fn primary(&mut self) -> Result<Expression, Error> {
         let current_token = self.peek();
 
-        if self.does_match(&[TokenType::Number]) {
+        if self.does_match(&[
+            TokenType::Number,
+            TokenType::True,
+            TokenType::False,
+            TokenType::Nil,
+        ]) {
             self.advance();
             Ok(Expression::Literal(LiteralExpression::new(
                 current_token.literal,

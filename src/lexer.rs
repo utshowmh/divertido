@@ -238,12 +238,26 @@ impl Lexer {
         }
 
         if let Some(ttype) = self.keywords.get(&identifier) {
-            Ok(Token::new(
-                ttype.clone(),
-                &identifier,
-                Object::Nil,
-                self.line,
-            ))
+            match ttype {
+                TokenType::True => Ok(Token::new(
+                    TokenType::True,
+                    &identifier,
+                    Object::Boolean(true),
+                    self.line,
+                )),
+                TokenType::False => Ok(Token::new(
+                    TokenType::False,
+                    &identifier,
+                    Object::Boolean(false),
+                    self.line,
+                )),
+                ttype => Ok(Token::new(
+                    ttype.clone(),
+                    &identifier,
+                    Object::Nil,
+                    self.line,
+                )),
+            }
         } else {
             Ok(Token::new(
                 TokenType::Identifier,
@@ -260,5 +274,8 @@ impl Lexer {
 
     fn init_keywords(&mut self) {
         self.keywords.insert("let".to_string(), TokenType::Let);
+        self.keywords.insert("true".to_string(), TokenType::True);
+        self.keywords.insert("false".to_string(), TokenType::False);
+        self.keywords.insert("nil".to_string(), TokenType::Nil);
     }
 }
