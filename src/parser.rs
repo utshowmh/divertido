@@ -4,7 +4,7 @@ use crate::{
         BinaryExpression, Expression, GroupingExpression, LiteralExpression, UnaryExpression,
         VariableExpression,
     },
-    statement::{ExpressionStatement, LetStatement, Statement},
+    statement::{ExpressionStatement, LetStatement, PrintStatement, Statement},
     token::{Token, TokenType},
 };
 
@@ -31,6 +31,7 @@ impl Parser {
     fn statement(&mut self) -> Result<Statement, Error> {
         match self.peek().ttype {
             TokenType::Let => self.let_statement(),
+            TokenType::Print => self.print_statement(),
             _ => self.expression_statement(),
         }
     }
@@ -62,16 +63,29 @@ impl Parser {
         Ok(Statement::Let(LetStatement::new(identifier, value)))
     }
 
-    fn expression_statement(&mut self) -> Result<Statement, Error> {
-        let statement = self.expression()?;
+    fn print_statement(&mut self) -> Result<Statement, Error> {
+        self.advance();
+        let expression = self.expression()?;
         self.consume(
             TokenType::Semicolon,
             &format!(
-                "Expected ';' after statement, found '{}'",
+                "Expected ';' after expression, found '{}'",
                 self.peek().lexeme
             ),
         )?;
-        Ok(Statement::Expression(ExpressionStatement::new(statement)))
+        Ok(Statement::Print(PrintStatement::new(expression)))
+    }
+
+    fn expression_statement(&mut self) -> Result<Statement, Error> {
+        let expression = self.expression()?;
+        self.consume(
+            TokenType::Semicolon,
+            &format!(
+                "Expected ';' after expression, found '{}'",
+                self.peek().lexeme
+            ),
+        )?;
+        Ok(Statement::Expression(ExpressionStatement::new(expression)))
     }
 
     fn expression(&mut self) -> Result<Expression, Error> {
@@ -89,7 +103,7 @@ impl Parser {
             TokenType::LessEqual,
         ]) {
             let operator = self.next_token();
-            let right = self.factor()?;
+            let right = self.term()?;
             left = Expression::Binary(BinaryExpression::new(left, operator, right));
         }
 

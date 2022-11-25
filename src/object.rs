@@ -10,9 +10,9 @@ pub enum Object {
 impl Display for Object {
     fn fmt(&self, f: &mut Formatter) -> Result {
         match self {
-            Self::Number(number) => write!(f, "Number({})", number),
-            Self::Boolean(boolean) => write!(f, "Boolean({})", boolean),
-            Self::Nil => write!(f, "Nil"),
+            Self::Number(number) => write!(f, "number({})", number),
+            Self::Boolean(boolean) => write!(f, "boolean({})", boolean),
+            Self::Nil => write!(f, "nil"),
         }
     }
 }

@@ -6,7 +6,7 @@ use crate::{
         UnaryExpression, VariableExpression,
     },
     object::Object,
-    statement::{ExpressionStatement, LetStatement, Statement, StatementVisitor},
+    statement::{ExpressionStatement, LetStatement, PrintStatement, Statement, StatementVisitor},
     token::TokenType,
 };
 
@@ -23,7 +23,7 @@ impl Interpreter {
 
     pub fn run(&mut self, statements: Vec<Statement>) -> Result<(), Error> {
         for statement in statements {
-            println!("{}", self.execute(statement)?);
+            self.execute(statement)?;
         }
 
         Ok(())
@@ -50,6 +50,14 @@ impl StatementVisitor<Object> for Interpreter {
     fn visit_let_statement(&mut self, statement: &LetStatement) -> Result<Object, Error> {
         let value = self.evaluate(&statement.value)?;
         self.environment.set(&statement.identifier, value);
+
+        Ok(Object::Nil)
+    }
+
+    fn visit_print_statement(&self, statement: &PrintStatement) -> Result<Object, Error> {
+        let value = self.evaluate(&statement.value)?;
+
+        println!("{}", value);
 
         Ok(Object::Nil)
     }

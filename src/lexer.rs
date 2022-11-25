@@ -277,5 +277,6 @@ impl Lexer {
         self.keywords.insert("true".to_string(), TokenType::True);
         self.keywords.insert("false".to_string(), TokenType::False);
         self.keywords.insert("nil".to_string(), TokenType::Nil);
+        self.keywords.insert("print".to_string(), TokenType::Print);
     }
 }

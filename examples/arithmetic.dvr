@@ -1,9 +1,10 @@
 let x = 69;
 let y = 96;
 
-x + y;
-x - y;
-x * y;
-x / y;
-(x / y) * 1;
-(x / y) * -1;
+print x + y;
+print x - y;
+print x * y;
+print x / y;
+print (x / y) * 1;
+print (x / y) * -1;
+print (1 + 1) - ((1 * 2) - 1);

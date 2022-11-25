@@ -13,6 +13,8 @@ pub enum TokenType {
     True,
     False,
 
+    Print,
+
     OpenParen,
     CloseParen,
 
@@ -44,6 +46,8 @@ impl Display for TokenType {
             Self::Nil => write!(f, "Nil"),
             Self::True => write!(f, "True"),
             Self::False => write!(f, "False"),
+
+            Self::Print => write!(f, "Print"),
 
             Self::OpenParen => write!(f, "OpenParen"),
             Self::CloseParen => write!(f, "CloseParen"),
