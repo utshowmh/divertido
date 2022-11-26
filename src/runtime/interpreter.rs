@@ -1,6 +1,6 @@
 use crate::runtime::environment::Environment;
 
-use crate::generel::{
+use crate::general::{
     error::{Error, ErrorType},
     expression::{
         BinaryExpression, Expression, ExpressionVisitor, GroupingExpression, LiteralExpression,

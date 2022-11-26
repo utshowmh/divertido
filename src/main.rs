@@ -1,5 +1,5 @@
 mod frontend;
-mod generel;
+mod general;
 mod runtime;
 
 use std::{
@@ -9,7 +9,7 @@ use std::{
     process::exit,
 };
 
-use generel::error::Error;
+use general::error::Error;
 
 use crate::{
     frontend::{lexer::Lexer, parser::Parser},

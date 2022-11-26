@@ -1,4 +1,4 @@
-use crate::generel::{error::Error, expression::Expression, token::Token};
+use crate::general::{error::Error, expression::Expression, token::Token};
 
 pub trait StatementVisitor<T> {
     fn visit_expression_statement(&self, statement: &ExpressionStatement) -> Result<T, Error>;

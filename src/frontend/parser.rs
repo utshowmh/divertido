@@ -1,4 +1,4 @@
-use crate::generel::{
+use crate::general::{
     error::{Error, ErrorType},
     expression::{
         BinaryExpression, Expression, GroupingExpression, LiteralExpression, UnaryExpression,

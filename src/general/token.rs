@@ -1,6 +1,6 @@
 use std::fmt::{Display, Formatter, Result};
 
-use crate::generel::object::Object;
+use crate::general::object::Object;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum TokenType {
