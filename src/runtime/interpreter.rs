@@ -84,6 +84,13 @@ impl ExpressionVisitor<Object> for Interpreter {
                     expression.operator.line,
                 )),
             },
+            TokenType::Bang => match &right {
+                Object::Boolean(boolean) => Ok(Object::Boolean(!boolean)),
+                _ => Err(self.error(
+                    &format!("Expected boolean after '!', found '{}", right),
+                    expression.operator.line,
+                )),
+            },
             _ => Err(self.error(
                 &format!("Expected '-', found '{}", expression.operator.lexeme),
                 expression.operator.line,
@@ -128,6 +135,12 @@ impl ExpressionVisitor<Object> for Interpreter {
                 (Object::Number(x), Object::Number(y)) => Ok(Object::Boolean(x == y)),
                 (Object::Boolean(x), Object::Boolean(y)) => Ok(Object::Boolean(x == y)),
                 (Object::Nil, Object::Nil) => Ok(Object::Boolean(true)),
+                (_, _) => Ok(Object::Boolean(false)),
+            },
+            TokenType::BangEqual => match (&left, &right) {
+                (Object::Number(x), Object::Number(y)) => Ok(Object::Boolean(x != y)),
+                (Object::Boolean(x), Object::Boolean(y)) => Ok(Object::Boolean(x != y)),
+                (Object::Nil, Object::Nil) => Ok(Object::Boolean(false)),
                 (_, _) => Ok(Object::Boolean(false)),
             },
             TokenType::Greater => match (&left, &right) {

@@ -138,6 +138,26 @@ impl Lexer {
                     }
                 }
 
+                '!' => {
+                    self.advance();
+                    if self.peek() == '=' {
+                        self.advance();
+                        tokens.push(Token::new(
+                            TokenType::BangEqual,
+                            &self.source[start..self.current],
+                            Object::Nil,
+                            self.line,
+                        ));
+                    } else {
+                        tokens.push(Token::new(
+                            TokenType::Bang,
+                            &self.source[start..self.current],
+                            Object::Nil,
+                            self.line,
+                        ));
+                    }
+                }
+
                 '>' => {
                     self.advance();
                     if self.peek() == '=' {

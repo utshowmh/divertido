@@ -27,6 +27,8 @@ pub enum TokenType {
 
     Equal,
     EqualEqual,
+    Bang,
+    BangEqual,
     Greater,
     GreaterEqual,
     Less,
@@ -61,6 +63,8 @@ impl Display for TokenType {
 
             Self::Equal => write!(f, "Equal"),
             Self::EqualEqual => write!(f, "EqualEqual"),
+            Self::Bang => write!(f, "Bang"),
+            Self::BangEqual => write!(f, "BangEqual"),
             Self::Greater => write!(f, "Greater"),
             Self::GreaterEqual => write!(f, "GreaterEqual"),
             Self::Less => write!(f, "Less"),

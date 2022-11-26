@@ -96,6 +96,7 @@ impl Parser {
         let mut left = self.term()?;
 
         while self.does_match(&[
+            TokenType::BangEqual,
             TokenType::EqualEqual,
             TokenType::Greater,
             TokenType::GreaterEqual,
@@ -136,6 +137,10 @@ impl Parser {
 
     fn unary(&mut self) -> Result<Expression, Error> {
         if self.does_match(&[TokenType::Minus]) {
+            let operator = self.next_token();
+            let right = self.primary()?;
+            Ok(Expression::Unray(UnaryExpression::new(operator, right)))
+        } else if self.does_match(&[TokenType::Bang]) {
             let operator = self.next_token();
             let right = self.primary()?;
             Ok(Expression::Unray(UnaryExpression::new(operator, right)))
