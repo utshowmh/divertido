@@ -6,3 +6,8 @@ print x > y;
 print x >= y;
 print x < y;
 print x <= y;
+
+let x = true;
+let y = false;
+
+print x == y;

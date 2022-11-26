@@ -95,7 +95,7 @@ impl Parser {
     fn comparison(&mut self) -> Result<Expression, Error> {
         let mut left = self.term()?;
 
-        if self.does_match(&[
+        while self.does_match(&[
             TokenType::EqualEqual,
             TokenType::Greater,
             TokenType::GreaterEqual,
@@ -113,7 +113,7 @@ impl Parser {
     fn term(&mut self) -> Result<Expression, Error> {
         let mut left = self.factor()?;
 
-        if self.does_match(&[TokenType::Plus, TokenType::Minus]) {
+        while self.does_match(&[TokenType::Plus, TokenType::Minus]) {
             let operator = self.next_token();
             let right = self.factor()?;
             left = Expression::Binary(BinaryExpression::new(left, operator, right));
@@ -125,7 +125,7 @@ impl Parser {
     fn factor(&mut self) -> Result<Expression, Error> {
         let mut left = self.unary()?;
 
-        if self.does_match(&[TokenType::Multiplication, TokenType::Division]) {
+        while self.does_match(&[TokenType::Multiplication, TokenType::Division]) {
             let operator = self.next_token();
             let right = self.unary()?;
             left = Expression::Binary(BinaryExpression::new(left, operator, right))

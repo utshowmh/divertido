@@ -1,3 +1,3 @@
 # DIVERTIDO
 
-## Divertido is an interpreted prorgaming language
+## Divertido is a dynamically typed interpreted prorgaming language
