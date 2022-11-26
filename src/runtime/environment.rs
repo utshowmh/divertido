@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::{
+use crate::generel::{
     error::{Error, ErrorType},
     object::Object,
     token::Token,

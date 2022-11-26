@@ -1,4 +1,4 @@
-use crate::{error::Error, object::Object, token::Token};
+use crate::generel::{error::Error, object::Object, token::Token};
 
 pub trait ExpressionVisitor<T> {
     fn visit_variable_expression(&self, expression: &VariableExpression) -> Result<T, Error>;

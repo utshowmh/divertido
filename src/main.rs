@@ -1,3 +1,7 @@
+mod frontend;
+mod generel;
+mod runtime;
+
 use std::{
     env::args,
     fs::read_to_string,
@@ -5,7 +9,12 @@ use std::{
     process::exit,
 };
 
-use divertido::{error::Error, interpreter::Interpreter, lexer::Lexer, parser::Parser};
+use generel::error::Error;
+
+use crate::{
+    frontend::{lexer::Lexer, parser::Parser},
+    runtime::interpreter::Interpreter,
+};
 
 fn main() {
     run().unwrap_or_else(|error| error.throw());
