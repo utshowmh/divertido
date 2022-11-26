@@ -23,8 +23,28 @@ fn main() {
 fn run() -> Result<(), Error> {
     let args: Vec<String> = args().collect();
 
-    if args.len() == 2 {
-        match args[1].as_str() {
+    match args.len() {
+        1 => {
+            let mut line = String::new();
+            let stdin = stdin();
+            let mut stdout = stdout();
+
+            loop {
+                print!("divertido :> ");
+                stdout.flush().unwrap();
+                stdin.read_line(&mut line).unwrap();
+
+                let mut lexer = Lexer::new(&line);
+                let tokens = lexer.lex()?;
+                let mut parser = Parser::new(tokens);
+                let statements = parser.parse()?;
+                let mut interpreter = Interpreter::new();
+                interpreter.run(statements)?;
+
+                line.clear();
+            }
+        }
+        2 => match args[1].as_str() {
             "repl" => {
                 let mut line = String::new();
                 let stdin = stdin();
@@ -60,9 +80,10 @@ fn run() -> Result<(), Error> {
                     print_help(Some(&format!("Could not open file '{}'", filepath)))
                 }
             }
+        },
+        _ => {
+            print_help(Some("Invalid number of commands"));
         }
-    } else {
-        print_help(Some("Invalid number of commands"));
     }
 
     Ok(())

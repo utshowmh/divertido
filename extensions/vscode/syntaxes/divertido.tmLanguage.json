@@ -1,0 +1,68 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "dvr",
+	"patterns": [
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#statements"
+		},
+		{
+			"include": "#ident"
+		},
+		{
+			"include": "#digits"
+		}
+	],
+	"repository": {
+		"keywords": {
+			"patterns": [
+				{
+					"name": "constant.language.null.dvr",
+					"match": "\\b(nil)\\b"
+				},
+				{
+					"name": "constant.language.boolean.dvr",
+					"match": "\\b(true|false)\\b"
+				},
+				{
+					"name": "support.function.builtin.dvr",
+					"match": "\\b(print)\\b"
+				}
+			]
+		},
+		"statements": {
+			"patterns": [
+				{
+					"match": "\\b(let)\\s+([A-Za-z_][A-Za-z0-9_]*)\\b",
+					"captures": {
+						"1": {
+							"name": "storage.type.dvr"
+						},
+						"2": {
+							"name": "support.variable.dvr"
+						}
+					}
+				}
+			]
+		},
+		"digits": {
+			"patterns": [
+				{
+					"name": "constant.numeric.dvr",
+					"match": "\\b[0-9]+(?:.[0-9]+)?\\b"
+				}
+			]
+		},
+		"ident": {
+			"patterns": [
+				{
+					"name": "variable.other.readwrite.dvr",
+					"match": "\\b[A-Za-z_][A-Za-z0-9_]*\\b"
+				}
+			]
+		}
+	},
+	"scopeName": "source.dvr"
+}

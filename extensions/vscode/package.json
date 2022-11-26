@@ -1,0 +1,25 @@
+{
+  "name": "dvr",
+  "displayName": "dvr",
+  "description": "syntax highlighter for divertido",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.73.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "divertido",
+      "aliases": ["divertido", "divertido"],
+      "extensions": [".dvr"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "divertido",
+      "scopeName": "source.dvr",
+      "path": "./syntaxes/divertido.tmLanguage.json"
+    }]
+  }
+}
