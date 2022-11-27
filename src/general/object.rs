@@ -4,6 +4,7 @@ use std::fmt::{Display, Formatter, Result};
 pub enum Object {
     Number(f64),
     Boolean(bool),
+    String(String),
     Nil,
 }
 
@@ -12,6 +13,7 @@ impl Display for Object {
         match self {
             Self::Number(number) => write!(f, "{}", number),
             Self::Boolean(boolean) => write!(f, "{}", boolean),
+            Self::String(string) => write!(f, "{}", string),
             Self::Nil => write!(f, "nil"),
         }
     }

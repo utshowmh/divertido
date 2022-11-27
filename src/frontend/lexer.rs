@@ -118,6 +118,17 @@ impl Lexer {
                     ));
                 }
 
+                '"' => {
+                    self.advance();
+                    let string = self.extract_string()?;
+                    tokens.push(Token::new(
+                        TokenType::String,
+                        &self.source[start..self.current],
+                        Object::String(string),
+                        self.line,
+                    ));
+                }
+
                 '=' => {
                     self.advance();
                     if self.peek() == '=' {
@@ -247,6 +258,21 @@ impl Lexer {
             ))
         } else {
             Err(self.error("Expected a digit"))
+        }
+    }
+
+    fn extract_string(&mut self) -> Result<String, Error> {
+        let mut string = String::new();
+        while self.peek().is_ascii() && !self.is_eof() && self.peek() != '"' {
+            string.push(self.peek());
+            self.advance();
+        }
+
+        if self.is_eof() {
+            Err(self.error("Unterminated string"))
+        } else {
+            self.advance();
+            Ok(string)
         }
     }
 

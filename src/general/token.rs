@@ -12,6 +12,7 @@ pub enum TokenType {
     Nil,
     True,
     False,
+    String,
 
     Print,
 
@@ -48,6 +49,7 @@ impl Display for TokenType {
             Self::Nil => write!(f, "Nil"),
             Self::True => write!(f, "True"),
             Self::False => write!(f, "False"),
+            Self::String => write!(f, "String"),
 
             Self::Print => write!(f, "Print"),
 

@@ -1,5 +1,8 @@
 let x = 69;
 print x;
 
+x = "divertido is an extrordinary language";
+print x;
+
 x = true;
 print x;

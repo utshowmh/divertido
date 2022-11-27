@@ -9,10 +9,13 @@
 			"include": "#statements"
 		},
 		{
-			"include": "#ident"
+			"include": "#identifiers"
 		},
 		{
 			"include": "#digits"
+		},
+		{
+			"include": "#strings"
 		}
 	],
 	"repository": {
@@ -55,13 +58,19 @@
 				}
 			]
 		},
-		"ident": {
+		"identifiers": {
 			"patterns": [
 				{
 					"name": "variable.other.readwrite.dvr",
 					"match": "\\b[A-Za-z_][A-Za-z0-9_]*\\b"
 				}
 			]
+		},
+		"strings": {
+			"name": "string.quoted.double.lox",
+			"begin": "\"",
+			"end": "\"",
+			"patterns": []
 		}
 	},
 	"scopeName": "source.dvr"

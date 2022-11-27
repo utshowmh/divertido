@@ -24,45 +24,11 @@ fn run() -> Result<(), Error> {
 
     match args.len() {
         1 => {
-            let mut line = String::new();
-            let stdin = stdin();
-            let mut stdout = stdout();
-
-            loop {
-                print!("divertido :> ");
-                stdout.flush().unwrap();
-                stdin.read_line(&mut line).unwrap();
-
-                let mut lexer = Lexer::new(&line);
-                let tokens = lexer.lex()?;
-                let mut parser = Parser::new(tokens);
-                let statements = parser.parse()?;
-                let mut interpreter = Interpreter::new();
-                interpreter.run(statements)?;
-
-                line.clear();
-            }
+            repl()?;
         }
         2 => match args[1].as_str() {
             "repl" => {
-                let mut line = String::new();
-                let stdin = stdin();
-                let mut stdout = stdout();
-
-                loop {
-                    print!("divertido :> ");
-                    stdout.flush().unwrap();
-                    stdin.read_line(&mut line).unwrap();
-
-                    let mut lexer = Lexer::new(&line);
-                    let tokens = lexer.lex()?;
-                    let mut parser = Parser::new(tokens);
-                    let statements = parser.parse()?;
-                    let mut interpreter = Interpreter::new();
-                    interpreter.run(statements)?;
-
-                    line.clear();
-                }
+                repl()?;
             }
 
             "help" => print_help(None),
@@ -86,6 +52,27 @@ fn run() -> Result<(), Error> {
     }
 
     Ok(())
+}
+
+fn repl() -> Result<(), Error> {
+    let mut line = String::new();
+    let stdin = stdin();
+    let mut stdout = stdout();
+
+    loop {
+        print!("divertido :> ");
+        stdout.flush().unwrap();
+        stdin.read_line(&mut line).unwrap();
+
+        let mut lexer = Lexer::new(&line);
+        let tokens = lexer.lex()?;
+        let mut parser = Parser::new(tokens);
+        let statements = parser.parse()?;
+        let mut interpreter = Interpreter::new();
+        interpreter.run(statements)?;
+
+        line.clear();
+    }
 }
 
 fn print_help(error: Option<&str>) {

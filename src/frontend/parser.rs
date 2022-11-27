@@ -179,6 +179,7 @@ impl Parser {
 
         if self.does_match(&[
             TokenType::Number,
+            TokenType::String,
             TokenType::True,
             TokenType::False,
             TokenType::Nil,
