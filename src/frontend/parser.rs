@@ -5,7 +5,8 @@ use crate::general::{
         VariableExpression,
     },
     statement::{
-        AssignmentExpression, ExpressionStatement, LetStatement, PrintStatement, Statement,
+        AssignmentExpression, BlockStatement, ExpressionStatement, LetStatement, PrintStatement,
+        Statement,
     },
     token::{Token, TokenType},
 };
@@ -34,6 +35,7 @@ impl Parser {
         match self.peek().ttype {
             TokenType::Let => self.let_statement(),
             TokenType::Identifier => self.assignment_statement(),
+            TokenType::OpenCurly => self.block_statement(),
             TokenType::Print => self.print_statement(),
             _ => self.expression_statement(),
         }
@@ -99,6 +101,22 @@ impl Parser {
             ),
         )?;
         Ok(Statement::Print(PrintStatement::new(expression)))
+    }
+
+    fn block_statement(&mut self) -> Result<Statement, Error> {
+        self.advance();
+        let mut statements = Vec::new();
+
+        while !self.does_match(&[TokenType::CloseCurly]) && !self.is_eof() {
+            statements.push(self.statement()?);
+        }
+
+        self.consume(
+            TokenType::CloseCurly,
+            &format!("Expected '}}' after block, found '{}'", self.peek().lexeme),
+        )?;
+
+        Ok(Statement::Block(BlockStatement::new(statements)))
     }
 
     fn expression_statement(&mut self) -> Result<Statement, Error> {

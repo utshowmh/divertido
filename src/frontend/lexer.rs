@@ -68,6 +68,26 @@ impl Lexer {
                     ));
                 }
 
+                '{' => {
+                    self.advance();
+                    tokens.push(Token::new(
+                        TokenType::OpenCurly,
+                        &self.source[start..self.current],
+                        Object::Nil,
+                        self.line,
+                    ));
+                }
+
+                '}' => {
+                    self.advance();
+                    tokens.push(Token::new(
+                        TokenType::CloseCurly,
+                        &self.source[start..self.current],
+                        Object::Nil,
+                        self.line,
+                    ));
+                }
+
                 '+' => {
                     self.advance();
                     tokens.push(Token::new(
@@ -337,9 +357,13 @@ impl Lexer {
 
     fn init_keywords(&mut self) {
         self.keywords.insert("let".to_string(), TokenType::Let);
+        self.keywords.insert("if".to_string(), TokenType::If);
+        self.keywords.insert("else".to_string(), TokenType::Else);
+
         self.keywords.insert("true".to_string(), TokenType::True);
         self.keywords.insert("false".to_string(), TokenType::False);
         self.keywords.insert("nil".to_string(), TokenType::Nil);
+
         self.keywords.insert("print".to_string(), TokenType::Print);
     }
 }

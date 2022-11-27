@@ -1,4 +1,4 @@
-use crate::general::statement::AssignmentExpression;
+use crate::general::statement::{AssignmentExpression, BlockStatement};
 use crate::runtime::environment::Environment;
 
 use crate::general::{
@@ -24,14 +24,14 @@ impl Interpreter {
     }
 
     pub fn run(&mut self, statements: Vec<Statement>) -> Result<(), Error> {
-        for statement in statements {
+        for statement in statements.iter() {
             self.execute(statement)?;
         }
 
         Ok(())
     }
 
-    fn execute(&mut self, statement: Statement) -> Result<Object, Error> {
+    fn execute(&mut self, statement: &Statement) -> Result<Object, Error> {
         statement.accept(self)
     }
 
@@ -68,6 +68,14 @@ impl StatementVisitor<Object> for Interpreter {
             }
             Err(error) => Err(error),
         }
+    }
+
+    fn visit_block_statement(&mut self, statement: &BlockStatement) -> Result<Object, Error> {
+        for statement in statement.statements.iter() {
+            self.execute(&statement)?;
+        }
+
+        Ok(Object::Nil)
     }
 
     fn visit_print_statement(&self, statement: &PrintStatement) -> Result<Object, Error> {

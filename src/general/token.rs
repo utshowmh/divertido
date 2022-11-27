@@ -9,6 +9,9 @@ pub enum TokenType {
     Identifier,
 
     Let,
+    If,
+    Else,
+
     Nil,
     True,
     False,
@@ -18,6 +21,8 @@ pub enum TokenType {
 
     OpenParen,
     CloseParen,
+    OpenCurly,
+    CloseCurly,
 
     Plus,
     Minus,
@@ -46,6 +51,9 @@ impl Display for TokenType {
             Self::Identifier => write!(f, "Identifier"),
 
             Self::Let => write!(f, "Let"),
+            Self::If => write!(f, "If"),
+            Self::Else => write!(f, "Else"),
+
             Self::Nil => write!(f, "Nil"),
             Self::True => write!(f, "True"),
             Self::False => write!(f, "False"),
@@ -55,6 +63,8 @@ impl Display for TokenType {
 
             Self::OpenParen => write!(f, "OpenParen"),
             Self::CloseParen => write!(f, "CloseParen"),
+            Self::OpenCurly => write!(f, "OpenCurly"),
+            Self::CloseCurly => write!(f, "CloseCurly"),
 
             Self::Plus => write!(f, "Plus"),
             Self::Minus => write!(f, "Minus"),

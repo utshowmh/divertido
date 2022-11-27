@@ -1,0 +1,6 @@
+// code block in divertido
+
+{
+    let a = 69;
+    print a;
+}

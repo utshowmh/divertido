@@ -4,6 +4,7 @@ pub trait StatementVisitor<T> {
     fn visit_expression_statement(&self, statement: &ExpressionStatement) -> Result<T, Error>;
     fn visit_let_statement(&mut self, statement: &LetStatement) -> Result<T, Error>;
     fn visit_assignment_statement(&mut self, statement: &AssignmentExpression) -> Result<T, Error>;
+    fn visit_block_statement(&mut self, statement: &BlockStatement) -> Result<T, Error>;
     fn visit_print_statement(&self, statement: &PrintStatement) -> Result<T, Error>;
 }
 
@@ -12,6 +13,7 @@ pub enum Statement {
     Expression(ExpressionStatement),
     Let(LetStatement),
     Assignment(AssignmentExpression),
+    Block(BlockStatement),
     Print(PrintStatement),
 }
 
@@ -21,6 +23,7 @@ impl Statement {
             Self::Expression(statement) => statement.accept(visitor),
             Self::Let(statement) => statement.accept(visitor),
             Self::Assignment(statement) => statement.accept(visitor),
+            Self::Block(statement) => statement.accept(visitor),
             Self::Print(statement) => statement.accept(visitor),
         }
     }
@@ -70,6 +73,21 @@ impl AssignmentExpression {
 
     pub fn accept<T>(&self, visitor: &mut dyn StatementVisitor<T>) -> Result<T, Error> {
         visitor.visit_assignment_statement(self)
+    }
+}
+
+#[derive(Debug)]
+pub struct BlockStatement {
+    pub statements: Vec<Statement>,
+}
+
+impl BlockStatement {
+    pub fn new(statements: Vec<Statement>) -> Self {
+        Self { statements }
+    }
+
+    pub fn accept<T>(&self, visitor: &mut dyn StatementVisitor<T>) -> Result<T, Error> {
+        visitor.visit_block_statement(self)
     }
 }
 
