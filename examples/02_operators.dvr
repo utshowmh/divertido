@@ -3,6 +3,8 @@
 let x = 69;
 let y = 96;
 
+// arithmetic operators
+
 print x + y;
 print x - y;
 print x * y;
@@ -14,6 +16,7 @@ x = 69;
 y = 96;
 
 // comparison operators
+
 print x == y;
 print x > y;
 print x >= y;
@@ -24,6 +27,7 @@ x = true;
 y = false;
 
 // logical operators
+
 print x == y;
 print x != y;
 print !y;
