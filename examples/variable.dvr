@@ -1,2 +1,5 @@
 let x = 69;
 print x;
+
+x = true;
+print x;

@@ -3,6 +3,7 @@ use crate::general::{error::Error, expression::Expression, token::Token};
 pub trait StatementVisitor<T> {
     fn visit_expression_statement(&self, statement: &ExpressionStatement) -> Result<T, Error>;
     fn visit_let_statement(&mut self, statement: &LetStatement) -> Result<T, Error>;
+    fn visit_assignment_statement(&mut self, statement: &AssignmentExpression) -> Result<T, Error>;
     fn visit_print_statement(&self, statement: &PrintStatement) -> Result<T, Error>;
 }
 
@@ -10,6 +11,7 @@ pub trait StatementVisitor<T> {
 pub enum Statement {
     Expression(ExpressionStatement),
     Let(LetStatement),
+    Assignment(AssignmentExpression),
     Print(PrintStatement),
 }
 
@@ -18,6 +20,7 @@ impl Statement {
         match self {
             Self::Expression(statement) => statement.accept(visitor),
             Self::Let(statement) => statement.accept(visitor),
+            Self::Assignment(statement) => statement.accept(visitor),
             Self::Print(statement) => statement.accept(visitor),
         }
     }
@@ -51,6 +54,22 @@ impl LetStatement {
 
     pub fn accept<T>(&self, visitor: &mut dyn StatementVisitor<T>) -> Result<T, Error> {
         visitor.visit_let_statement(self)
+    }
+}
+
+#[derive(Debug)]
+pub struct AssignmentExpression {
+    pub identifier: Token,
+    pub value: Expression,
+}
+
+impl AssignmentExpression {
+    pub fn new(identifier: Token, value: Expression) -> Self {
+        Self { identifier, value }
+    }
+
+    pub fn accept<T>(&self, visitor: &mut dyn StatementVisitor<T>) -> Result<T, Error> {
+        visitor.visit_assignment_statement(self)
     }
 }
 

@@ -4,7 +4,9 @@ use crate::general::{
         BinaryExpression, Expression, GroupingExpression, LiteralExpression, UnaryExpression,
         VariableExpression,
     },
-    statement::{ExpressionStatement, LetStatement, PrintStatement, Statement},
+    statement::{
+        AssignmentExpression, ExpressionStatement, LetStatement, PrintStatement, Statement,
+    },
     token::{Token, TokenType},
 };
 
@@ -31,6 +33,7 @@ impl Parser {
     fn statement(&mut self) -> Result<Statement, Error> {
         match self.peek().ttype {
             TokenType::Let => self.let_statement(),
+            TokenType::Identifier => self.assignment_statement(),
             TokenType::Print => self.print_statement(),
             _ => self.expression_statement(),
         }
@@ -61,6 +64,28 @@ impl Parser {
             ),
         )?;
         Ok(Statement::Let(LetStatement::new(identifier, value)))
+    }
+
+    fn assignment_statement(&mut self) -> Result<Statement, Error> {
+        let identifier = self.next_token();
+        self.consume(
+            TokenType::Equal,
+            &format!(
+                "Expected '=' after identifier, found '{}'",
+                self.peek().lexeme
+            ),
+        )?;
+        let value = self.expression()?;
+        self.consume(
+            TokenType::Semicolon,
+            &format!(
+                "Expected ';' after variable declaration, found '{}'",
+                self.peek().lexeme
+            ),
+        )?;
+        Ok(Statement::Assignment(AssignmentExpression::new(
+            identifier, value,
+        )))
     }
 
     fn print_statement(&mut self) -> Result<Statement, Error> {

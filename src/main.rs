@@ -9,10 +9,9 @@ use std::{
     process::exit,
 };
 
-use general::error::Error;
-
 use crate::{
     frontend::{lexer::Lexer, parser::Parser},
+    general::error::Error,
     runtime::interpreter::Interpreter,
 };
 

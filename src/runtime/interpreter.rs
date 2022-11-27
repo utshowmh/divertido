@@ -1,3 +1,4 @@
+use crate::general::statement::AssignmentExpression;
 use crate::runtime::environment::Environment;
 
 use crate::general::{
@@ -55,6 +56,20 @@ impl StatementVisitor<Object> for Interpreter {
         Ok(Object::Nil)
     }
 
+    fn visit_assignment_statement(
+        &mut self,
+        statement: &AssignmentExpression,
+    ) -> Result<Object, Error> {
+        let value = self.evaluate(&statement.value)?;
+        match self.environment.get(&statement.identifier) {
+            Ok(_) => {
+                self.environment.set(&statement.identifier, value);
+                Ok(Object::Nil)
+            }
+            Err(error) => Err(error),
+        }
+    }
+
     fn visit_print_statement(&self, statement: &PrintStatement) -> Result<Object, Error> {
         let value = self.evaluate(&statement.value)?;
 
@@ -84,6 +99,7 @@ impl ExpressionVisitor<Object> for Interpreter {
                     expression.operator.line,
                 )),
             },
+
             TokenType::Bang => match &right {
                 Object::Boolean(boolean) => Ok(Object::Boolean(!boolean)),
                 _ => Err(self.error(
@@ -91,6 +107,7 @@ impl ExpressionVisitor<Object> for Interpreter {
                     expression.operator.line,
                 )),
             },
+
             _ => Err(self.error(
                 &format!("Expected '-', found '{}", expression.operator.lexeme),
                 expression.operator.line,
@@ -110,6 +127,7 @@ impl ExpressionVisitor<Object> for Interpreter {
                     expression.operator.line,
                 )),
             },
+
             TokenType::Minus => match (&left, &right) {
                 (Object::Number(x), Object::Number(y)) => Ok(Object::Number(x - y)),
                 (_, _) => Err(self.error(
@@ -117,6 +135,7 @@ impl ExpressionVisitor<Object> for Interpreter {
                     expression.operator.line,
                 )),
             },
+
             TokenType::Multiplication => match (&left, &right) {
                 (Object::Number(x), Object::Number(y)) => Ok(Object::Number(x * y)),
                 (_, _) => Err(self.error(
@@ -124,6 +143,7 @@ impl ExpressionVisitor<Object> for Interpreter {
                     expression.operator.line,
                 )),
             },
+
             TokenType::Division => match (&left, &right) {
                 (Object::Number(x), Object::Number(y)) => Ok(Object::Number(x / y)),
                 (_, _) => Err(self.error(
@@ -131,18 +151,11 @@ impl ExpressionVisitor<Object> for Interpreter {
                     expression.operator.line,
                 )),
             },
-            TokenType::EqualEqual => match (&left, &right) {
-                (Object::Number(x), Object::Number(y)) => Ok(Object::Boolean(x == y)),
-                (Object::Boolean(x), Object::Boolean(y)) => Ok(Object::Boolean(x == y)),
-                (Object::Nil, Object::Nil) => Ok(Object::Boolean(true)),
-                (_, _) => Ok(Object::Boolean(false)),
-            },
-            TokenType::BangEqual => match (&left, &right) {
-                (Object::Number(x), Object::Number(y)) => Ok(Object::Boolean(x != y)),
-                (Object::Boolean(x), Object::Boolean(y)) => Ok(Object::Boolean(x != y)),
-                (Object::Nil, Object::Nil) => Ok(Object::Boolean(false)),
-                (_, _) => Ok(Object::Boolean(false)),
-            },
+
+            TokenType::EqualEqual => Ok(Object::Boolean(left == right)),
+
+            TokenType::BangEqual => Ok(Object::Boolean(left != right)),
+
             TokenType::Greater => match (&left, &right) {
                 (Object::Number(x), Object::Number(y)) => Ok(Object::Boolean(x > y)),
                 (_, _) => Err(self.error(
@@ -150,6 +163,7 @@ impl ExpressionVisitor<Object> for Interpreter {
                     expression.operator.line,
                 )),
             },
+
             TokenType::GreaterEqual => match (&left, &right) {
                 (Object::Number(x), Object::Number(y)) => Ok(Object::Boolean(x >= y)),
                 (_, _) => Err(self.error(
@@ -157,6 +171,7 @@ impl ExpressionVisitor<Object> for Interpreter {
                     expression.operator.line,
                 )),
             },
+
             TokenType::Less => match (&left, &right) {
                 (Object::Number(x), Object::Number(y)) => Ok(Object::Boolean(x < y)),
                 (_, _) => Err(self.error(
@@ -164,6 +179,7 @@ impl ExpressionVisitor<Object> for Interpreter {
                     expression.operator.line,
                 )),
             },
+
             TokenType::LessEqual => match (&left, &right) {
                 (Object::Number(x), Object::Number(y)) => Ok(Object::Boolean(x <= y)),
                 (_, _) => Err(self.error(
@@ -171,6 +187,7 @@ impl ExpressionVisitor<Object> for Interpreter {
                     expression.operator.line,
                 )),
             },
+
             _ => Err(self.error(
                 &format!(
                     "Expected (+ | - | * | /), found '{}'",
