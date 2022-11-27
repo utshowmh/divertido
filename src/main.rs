@@ -42,7 +42,10 @@ fn run() -> Result<(), Error> {
                     let mut interpreter = Interpreter::new();
                     interpreter.run(statements)?;
                 } else {
-                    print_help(Some(&format!("Could not open file '{}'", filepath)))
+                    print_help(Some(&format!(
+                        "Could not open specified file '{}'",
+                        filepath
+                    )))
                 }
             }
         },

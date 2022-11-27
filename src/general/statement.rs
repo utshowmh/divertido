@@ -5,6 +5,7 @@ pub trait StatementVisitor<T> {
     fn visit_let_statement(&mut self, statement: &LetStatement) -> Result<T, Error>;
     fn visit_assignment_statement(&mut self, statement: &AssignmentExpression) -> Result<T, Error>;
     fn visit_block_statement(&mut self, statement: &BlockStatement) -> Result<T, Error>;
+    fn visit_if_statement(&mut self, statement: &IfStatement) -> Result<T, Error>;
     fn visit_print_statement(&self, statement: &PrintStatement) -> Result<T, Error>;
 }
 
@@ -14,6 +15,7 @@ pub enum Statement {
     Let(LetStatement),
     Assignment(AssignmentExpression),
     Block(BlockStatement),
+    If(IfStatement),
     Print(PrintStatement),
 }
 
@@ -24,6 +26,7 @@ impl Statement {
             Self::Let(statement) => statement.accept(visitor),
             Self::Assignment(statement) => statement.accept(visitor),
             Self::Block(statement) => statement.accept(visitor),
+            Self::If(statement) => statement.accept(visitor),
             Self::Print(statement) => statement.accept(visitor),
         }
     }
@@ -88,6 +91,30 @@ impl BlockStatement {
 
     pub fn accept<T>(&self, visitor: &mut dyn StatementVisitor<T>) -> Result<T, Error> {
         visitor.visit_block_statement(self)
+    }
+}
+
+#[derive(Debug)]
+pub struct IfStatement {
+    pub conditional: Expression,
+    pub block: Box<Statement>,
+    pub else_block: Option<Box<Statement>>,
+}
+
+impl IfStatement {
+    pub fn new(conditional: Expression, block: Statement, else_block: Option<Statement>) -> Self {
+        Self {
+            conditional,
+            block: Box::new(block),
+            else_block: match else_block {
+                Some(block) => Some(Box::new(block)),
+                None => None,
+            },
+        }
+    }
+
+    pub fn accept<T>(&self, visitor: &mut dyn StatementVisitor<T>) -> Result<T, Error> {
+        visitor.visit_if_statement(self)
     }
 }
 

@@ -1,4 +1,4 @@
-use crate::general::statement::{AssignmentExpression, BlockStatement};
+use crate::general::statement::{AssignmentExpression, BlockStatement, IfStatement};
 use crate::runtime::environment::Environment;
 
 use crate::general::{
@@ -73,6 +73,20 @@ impl StatementVisitor<Object> for Interpreter {
     fn visit_block_statement(&mut self, statement: &BlockStatement) -> Result<Object, Error> {
         for statement in statement.statements.iter() {
             self.execute(&statement)?;
+        }
+
+        Ok(Object::Nil)
+    }
+
+    fn visit_if_statement(&mut self, statement: &IfStatement) -> Result<Object, Error> {
+        let conditional = self.evaluate(&statement.conditional)?;
+
+        if conditional.is_truthy() {
+            self.execute(&statement.block)?;
+        } else {
+            if let Some(else_block) = &statement.else_block {
+                self.execute(else_block)?;
+            }
         }
 
         Ok(Object::Nil)

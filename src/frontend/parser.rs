@@ -5,8 +5,8 @@ use crate::general::{
         VariableExpression,
     },
     statement::{
-        AssignmentExpression, BlockStatement, ExpressionStatement, LetStatement, PrintStatement,
-        Statement,
+        AssignmentExpression, BlockStatement, ExpressionStatement, IfStatement, LetStatement,
+        PrintStatement, Statement,
     },
     token::{Token, TokenType},
 };
@@ -36,6 +36,7 @@ impl Parser {
             TokenType::Let => self.let_statement(),
             TokenType::Identifier => self.assignment_statement(),
             TokenType::OpenCurly => self.block_statement(),
+            TokenType::If => self.if_statement(),
             TokenType::Print => self.print_statement(),
             _ => self.expression_statement(),
         }
@@ -101,6 +102,24 @@ impl Parser {
             ),
         )?;
         Ok(Statement::Print(PrintStatement::new(expression)))
+    }
+
+    fn if_statement(&mut self) -> Result<Statement, Error> {
+        self.advance();
+        let conditional = self.expression()?;
+        let block = self.block_statement()?;
+        let mut else_block = None;
+
+        if self.peek().ttype == TokenType::Else {
+            self.advance();
+            else_block = Some(self.block_statement()?);
+        }
+
+        Ok(Statement::If(IfStatement::new(
+            conditional,
+            block,
+            else_block,
+        )))
     }
 
     fn block_statement(&mut self) -> Result<Statement, Error> {

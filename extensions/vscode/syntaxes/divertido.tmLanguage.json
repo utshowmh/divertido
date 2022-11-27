@@ -25,6 +25,10 @@
 		"keywords": {
 			"patterns": [
 				{
+					"name": "keyword.control.dvr",
+					"match": "\\b(if|else)\\b"
+				},
+				{
 					"name": "constant.language.null.dvr",
 					"match": "\\b(nil)\\b"
 				},

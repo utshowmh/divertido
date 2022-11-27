@@ -1,0 +1,9 @@
+// conditional statements in divertido
+
+let x = false;
+
+if x {
+    print "x";
+} else {
+    print "!x";
+}
