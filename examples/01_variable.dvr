@@ -1,0 +1,10 @@
+// using variable in divertido
+
+let x = 69; // defining a variable
+print x;    // printing x to stdout
+
+x = "divertido is an extrordinary language"; // variables are dynamically typed
+print x;
+
+x = true;
+print x;

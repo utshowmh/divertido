@@ -1,6 +1,0 @@
-let x = true;
-let y = false;
-
-print x == y;
-print x != y;
-print !y;

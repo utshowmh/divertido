@@ -98,16 +98,6 @@ impl Lexer {
                     ));
                 }
 
-                '/' => {
-                    self.advance();
-                    tokens.push(Token::new(
-                        TokenType::Division,
-                        &self.source[start..self.current],
-                        Object::Nil,
-                        self.line,
-                    ));
-                }
-
                 ';' => {
                     self.advance();
                     tokens.push(Token::new(
@@ -127,6 +117,21 @@ impl Lexer {
                         Object::String(string),
                         self.line,
                     ));
+                }
+
+                '/' => {
+                    self.advance();
+                    if self.peek() == '/' {
+                        self.advance();
+                        self.ignore_comment()?;
+                    } else {
+                        tokens.push(Token::new(
+                            TokenType::Division,
+                            &self.source[start..self.current],
+                            Object::Nil,
+                            self.line,
+                        ));
+                    }
                 }
 
                 '=' => {
@@ -311,6 +316,18 @@ impl Lexer {
                 Object::Nil,
                 self.line,
             ))
+        }
+    }
+
+    fn ignore_comment(&mut self) -> Result<(), Error> {
+        while !self.is_eof() && self.peek() != '\n' {
+            self.advance();
+        }
+
+        if self.is_eof() {
+            Err(self.error("Unterminated comment"))
+        } else {
+            Ok(())
         }
     }
 

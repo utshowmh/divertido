@@ -3,6 +3,9 @@
 	"name": "dvr",
 	"patterns": [
 		{
+			"include": "#comments"
+		},
+		{
 			"include": "#keywords"
 		},
 		{
@@ -67,10 +70,18 @@
 			]
 		},
 		"strings": {
-			"name": "string.quoted.double.lox",
+			"name": "string.quoted.double.dvr",
 			"begin": "\"",
 			"end": "\"",
 			"patterns": []
+		},
+		"comments": {
+			"patterns": [
+				{
+					"name": "comment.line.double-slash.dvr",
+					"match": "\\/\\/.*"
+				}
+			]
 		}
 	},
 	"scopeName": "source.dvr"

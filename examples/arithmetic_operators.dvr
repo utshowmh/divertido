@@ -1,9 +1,0 @@
-let x = 69;
-let y = 96;
-
-print x + y;
-print x - y;
-print x * y;
-print x / y;
-print (x / y) * 1;
-print (x / y) * -1;
