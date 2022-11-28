@@ -1,14 +1,12 @@
 // conditional statements in divertido
 
 let x = nil;
-let y = "y";
+let y = nil;
 
 if x {
     print "x";
+} else if y {
+    print "y";
 } else {
-    if y {
-        print "y";
-    } else {
-        print "!y";
-    }
+    print "none of them truethy";
 }

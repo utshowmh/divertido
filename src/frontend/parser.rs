@@ -113,7 +113,11 @@ impl Parser {
 
         if self.peek().ttype == TokenType::Else {
             self.advance();
-            else_block = Some(self.block_statement()?);
+            if self.peek().ttype == TokenType::If {
+                else_block = Some(self.if_statement()?);
+            } else {
+                else_block = Some(self.block_statement()?);
+            }
         }
 
         Ok(Statement::If(IfStatement::new(
