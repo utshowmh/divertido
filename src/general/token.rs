@@ -11,6 +11,7 @@ pub enum TokenType {
     Let,
     If,
     Else,
+    While,
 
     Nil,
     True,
@@ -53,6 +54,7 @@ impl Display for TokenType {
             Self::Let => write!(f, "Let"),
             Self::If => write!(f, "If"),
             Self::Else => write!(f, "Else"),
+            Self::While => write!(f, "While"),
 
             Self::Nil => write!(f, "Nil"),
             Self::True => write!(f, "True"),

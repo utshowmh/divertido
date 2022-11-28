@@ -1,4 +1,6 @@
-use crate::general::statement::{AssignmentExpression, BlockStatement, IfStatement};
+use crate::general::statement::{
+    AssignmentExpression, BlockStatement, IfStatement, WhileStatement,
+};
 use crate::runtime::environment::Environment;
 
 use crate::general::{
@@ -87,6 +89,16 @@ impl StatementVisitor<Object> for Interpreter {
             if let Some(else_block) = &statement.else_block {
                 self.execute(else_block)?;
             }
+        }
+
+        Ok(Object::Nil)
+    }
+
+    fn visit_while_statement(&mut self, statement: &WhileStatement) -> Result<Object, Error> {
+        let mut conditional = self.evaluate(&statement.conditional)?;
+        while conditional.is_truthy() {
+            conditional = self.evaluate(&statement.conditional)?;
+            self.execute(&statement.block)?;
         }
 
         Ok(Object::Nil)

@@ -6,7 +6,7 @@ use crate::general::{
     },
     statement::{
         AssignmentExpression, BlockStatement, ExpressionStatement, IfStatement, LetStatement,
-        PrintStatement, Statement,
+        PrintStatement, Statement, WhileStatement,
     },
     token::{Token, TokenType},
 };
@@ -37,6 +37,7 @@ impl Parser {
             TokenType::Identifier => self.assignment_statement(),
             TokenType::OpenCurly => self.block_statement(),
             TokenType::If => self.if_statement(),
+            TokenType::While => self.while_statement(),
             TokenType::Print => self.print_statement(),
             _ => self.expression_statement(),
         }
@@ -120,6 +121,13 @@ impl Parser {
             if_block,
             else_block,
         )))
+    }
+
+    fn while_statement(&mut self) -> Result<Statement, Error> {
+        self.advance();
+        let conditional = self.expression()?;
+        let block = self.block_statement()?;
+        Ok(Statement::While(WhileStatement::new(conditional, block)))
     }
 
     fn block_statement(&mut self) -> Result<Statement, Error> {

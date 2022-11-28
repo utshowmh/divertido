@@ -6,6 +6,7 @@ pub trait StatementVisitor<T> {
     fn visit_assignment_statement(&mut self, statement: &AssignmentExpression) -> Result<T, Error>;
     fn visit_block_statement(&mut self, statement: &BlockStatement) -> Result<T, Error>;
     fn visit_if_statement(&mut self, statement: &IfStatement) -> Result<T, Error>;
+    fn visit_while_statement(&mut self, statement: &WhileStatement) -> Result<T, Error>;
     fn visit_print_statement(&self, statement: &PrintStatement) -> Result<T, Error>;
 }
 
@@ -16,6 +17,7 @@ pub enum Statement {
     Assignment(AssignmentExpression),
     Block(BlockStatement),
     If(IfStatement),
+    While(WhileStatement),
     Print(PrintStatement),
 }
 
@@ -27,6 +29,7 @@ impl Statement {
             Self::Assignment(statement) => statement.accept(visitor),
             Self::Block(statement) => statement.accept(visitor),
             Self::If(statement) => statement.accept(visitor),
+            Self::While(statement) => statement.accept(visitor),
             Self::Print(statement) => statement.accept(visitor),
         }
     }
@@ -119,6 +122,25 @@ impl IfStatement {
 
     pub fn accept<T>(&self, visitor: &mut dyn StatementVisitor<T>) -> Result<T, Error> {
         visitor.visit_if_statement(self)
+    }
+}
+
+#[derive(Debug)]
+pub struct WhileStatement {
+    pub conditional: Expression,
+    pub block: Box<Statement>,
+}
+
+impl WhileStatement {
+    pub fn new(conditional: Expression, block: Statement) -> Self {
+        Self {
+            conditional,
+            block: Box::new(block),
+        }
+    }
+
+    pub fn accept<T>(&self, visitor: &mut dyn StatementVisitor<T>) -> Result<T, Error> {
+        visitor.visit_while_statement(self)
     }
 }
 

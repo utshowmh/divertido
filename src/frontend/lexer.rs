@@ -143,7 +143,7 @@ impl Lexer {
                     self.advance();
                     if self.peek() == '/' {
                         self.advance();
-                        self.ignore_comment()?;
+                        self.ignore_comment();
                     } else {
                         tokens.push(Token::new(
                             TokenType::Division,
@@ -339,15 +339,9 @@ impl Lexer {
         }
     }
 
-    fn ignore_comment(&mut self) -> Result<(), Error> {
+    fn ignore_comment(&mut self) {
         while !self.is_eof() && self.peek() != '\n' {
             self.advance();
-        }
-
-        if self.is_eof() {
-            Err(self.error("Unterminated comment"))
-        } else {
-            Ok(())
         }
     }
 
@@ -359,6 +353,7 @@ impl Lexer {
         self.keywords.insert("let".to_string(), TokenType::Let);
         self.keywords.insert("if".to_string(), TokenType::If);
         self.keywords.insert("else".to_string(), TokenType::Else);
+        self.keywords.insert("while".to_string(), TokenType::While);
 
         self.keywords.insert("true".to_string(), TokenType::True);
         self.keywords.insert("false".to_string(), TokenType::False);
