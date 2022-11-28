@@ -186,6 +186,14 @@ impl ExpressionVisitor<Object> for Interpreter {
                 )),
             },
 
+            TokenType::Modulo => match (&left, &right) {
+                (Object::Number(x), Object::Number(y)) => Ok(Object::Number(x % y)),
+                (_, _) => Err(self.error(
+                    &format!("Expected 'number % number', found '{} % {}'", left, right),
+                    expression.operator.line,
+                )),
+            },
+
             TokenType::EqualEqual => Ok(Object::Boolean(left == right)),
 
             TokenType::BangEqual => Ok(Object::Boolean(left != right)),

@@ -199,7 +199,11 @@ impl Parser {
     fn factor(&mut self) -> Result<Expression, Error> {
         let mut left = self.unary()?;
 
-        while self.does_match(&[TokenType::Multiplication, TokenType::Division]) {
+        while self.does_match(&[
+            TokenType::Multiplication,
+            TokenType::Division,
+            TokenType::Modulo,
+        ]) {
             let operator = self.next_token();
             let right = self.unary()?;
             left = Expression::Binary(BinaryExpression::new(left, operator, right))

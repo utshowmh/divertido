@@ -29,6 +29,7 @@ pub enum TokenType {
     Minus,
     Multiplication,
     Division,
+    Modulo,
 
     Semicolon,
 
@@ -72,6 +73,7 @@ impl Display for TokenType {
             Self::Minus => write!(f, "Minus"),
             Self::Multiplication => write!(f, "Multiplication"),
             Self::Division => write!(f, "Division"),
+            Self::Modulo => write!(f, "Modulo"),
 
             Self::Semicolon => write!(f, "Semicolon"),
 

@@ -118,6 +118,16 @@ impl Lexer {
                     ));
                 }
 
+                '%' => {
+                    self.advance();
+                    tokens.push(Token::new(
+                        TokenType::Modulo,
+                        &self.source[start..self.current],
+                        Object::Nil,
+                        self.line,
+                    ));
+                }
+
                 ';' => {
                     self.advance();
                     tokens.push(Token::new(
