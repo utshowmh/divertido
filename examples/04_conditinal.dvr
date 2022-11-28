@@ -1,9 +1,14 @@
 // conditional statements in divertido
 
 let x = nil;
+let y = "y";
 
 if x {
     print "x";
 } else {
-    print "!x";
+    if y {
+        print "y";
+    } else {
+        print "!y";
+    }
 }
