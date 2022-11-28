@@ -1,6 +1,6 @@
 // conditional statements in divertido
 
-let x = false;
+let x = nil;
 
 if x {
     print "x";

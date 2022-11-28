@@ -24,7 +24,7 @@ impl Interpreter {
     }
 
     pub fn run(&mut self, statements: Vec<Statement>) -> Result<(), Error> {
-        for statement in statements.iter() {
+        for statement in &statements {
             self.execute(statement)?;
         }
 
@@ -71,7 +71,7 @@ impl StatementVisitor<Object> for Interpreter {
     }
 
     fn visit_block_statement(&mut self, statement: &BlockStatement) -> Result<Object, Error> {
-        for statement in statement.statements.iter() {
+        for statement in &statement.statements {
             self.execute(&statement)?;
         }
 

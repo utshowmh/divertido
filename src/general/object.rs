@@ -22,9 +22,9 @@ impl Display for Object {
 impl Object {
     pub fn is_truthy(&self) -> bool {
         match self {
-            Self::Nil => true,
-            Self::Boolean(x) => x == &true,
-            _ => false,
+            Self::Nil => false,
+            Self::Boolean(x) => x.clone(),
+            _ => true,
         }
     }
 }
