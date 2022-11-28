@@ -82,7 +82,7 @@ impl StatementVisitor<Object> for Interpreter {
         let conditional = self.evaluate(&statement.conditional)?;
 
         if conditional.is_truthy() {
-            self.execute(&statement.block)?;
+            self.execute(&statement.if_block)?;
         } else {
             if let Some(else_block) = &statement.else_block {
                 self.execute(else_block)?;

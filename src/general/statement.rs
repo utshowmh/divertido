@@ -97,15 +97,19 @@ impl BlockStatement {
 #[derive(Debug)]
 pub struct IfStatement {
     pub conditional: Expression,
-    pub block: Box<Statement>,
+    pub if_block: Box<Statement>,
     pub else_block: Option<Box<Statement>>,
 }
 
 impl IfStatement {
-    pub fn new(conditional: Expression, block: Statement, else_block: Option<Statement>) -> Self {
+    pub fn new(
+        conditional: Expression,
+        if_block: Statement,
+        else_block: Option<Statement>,
+    ) -> Self {
         Self {
             conditional,
-            block: Box::new(block),
+            if_block: Box::new(if_block),
             else_block: match else_block {
                 Some(block) => Some(Box::new(block)),
                 None => None,

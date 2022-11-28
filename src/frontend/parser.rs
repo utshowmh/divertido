@@ -107,7 +107,7 @@ impl Parser {
     fn if_statement(&mut self) -> Result<Statement, Error> {
         self.advance();
         let conditional = self.expression()?;
-        let block = self.block_statement()?;
+        let if_block = self.block_statement()?;
         let mut else_block = None;
 
         if self.peek().ttype == TokenType::Else {
@@ -117,7 +117,7 @@ impl Parser {
 
         Ok(Statement::If(IfStatement::new(
             conditional,
-            block,
+            if_block,
             else_block,
         )))
     }
@@ -132,7 +132,10 @@ impl Parser {
 
         self.consume(
             TokenType::CloseCurly,
-            &format!("Expected '}}' after block, found '{}'", self.peek().lexeme),
+            &format!(
+                "Expected '}}' after if_block, found '{}'",
+                self.peek().lexeme
+            ),
         )?;
 
         Ok(Statement::Block(BlockStatement::new(statements)))
