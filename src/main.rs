@@ -37,8 +37,10 @@ fn run() -> Result<(), Error> {
                 if let Ok(source) = read_to_string(filepath) {
                     let mut lexer = Lexer::new(&source);
                     let tokens = lexer.lex()?;
+
                     let mut parser = Parser::new(tokens);
                     let statements = parser.parse()?;
+
                     let mut interpreter = Interpreter::new();
                     interpreter.run(statements)?;
                 } else {
@@ -69,8 +71,10 @@ fn repl() -> Result<(), Error> {
 
         let mut lexer = Lexer::new(&line);
         let tokens = lexer.lex()?;
+
         let mut parser = Parser::new(tokens);
         let statements = parser.parse()?;
+
         let mut interpreter = Interpreter::new();
         interpreter.run(statements)?;
 

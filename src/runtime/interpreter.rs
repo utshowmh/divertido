@@ -73,9 +73,13 @@ impl StatementVisitor<Object> for Interpreter {
     }
 
     fn visit_block_statement(&mut self, statement: &BlockStatement) -> Result<Object, Error> {
+        let old_environment = self.environment.clone();
+
         for statement in &statement.statements {
             self.execute(&statement)?;
         }
+
+        self.environment = old_environment;
 
         Ok(Object::Nil)
     }

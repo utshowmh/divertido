@@ -1,6 +1,10 @@
 // code block in divertido
 
+let x = 69;
+
 {
-    let a = 69;
-    print a;
+    let x = 96;
+    print x;
 }
+
+print x;
