@@ -1,17 +1,18 @@
-use crate::general::statement::{
-    AssignmentExpression, BlockStatement, IfStatement, WhileStatement,
-};
-use crate::runtime::environment::Environment;
-
-use crate::general::{
-    error::{Error, ErrorType},
-    expression::{
-        BinaryExpression, Expression, ExpressionVisitor, GroupingExpression, LiteralExpression,
-        UnaryExpression, VariableExpression,
+use crate::{
+    general::{
+        error::{Error, ErrorType},
+        expression::{
+            BinaryExpression, Expression, ExpressionVisitor, GroupingExpression, LiteralExpression,
+            UnaryExpression, VariableExpression,
+        },
+        object::Object,
+        statement::{
+            AssignmentExpression, BlockStatement, ExpressionStatement, IfStatement, LetStatement,
+            PrintStatement, Statement, StatementVisitor, WhileStatement,
+        },
+        token::TokenType,
     },
-    object::Object,
-    statement::{ExpressionStatement, LetStatement, PrintStatement, Statement, StatementVisitor},
-    token::TokenType,
+    runtime::environment::Environment,
 };
 
 pub struct Interpreter {
@@ -53,6 +54,7 @@ impl StatementVisitor<Object> for Interpreter {
 
     fn visit_let_statement(&mut self, statement: &LetStatement) -> Result<Object, Error> {
         let value = self.evaluate(&statement.value)?;
+
         self.environment.set(&statement.identifier, value);
 
         Ok(Object::Nil)
@@ -63,6 +65,7 @@ impl StatementVisitor<Object> for Interpreter {
         statement: &AssignmentExpression,
     ) -> Result<Object, Error> {
         let value = self.evaluate(&statement.value)?;
+
         match self.environment.get(&statement.identifier) {
             Ok(_) => {
                 self.environment.set(&statement.identifier, value);
@@ -73,13 +76,9 @@ impl StatementVisitor<Object> for Interpreter {
     }
 
     fn visit_block_statement(&mut self, statement: &BlockStatement) -> Result<Object, Error> {
-        let old_environment = self.environment.clone();
-
         for statement in &statement.statements {
             self.execute(&statement)?;
         }
-
-        self.environment = old_environment;
 
         Ok(Object::Nil)
     }
@@ -100,6 +99,7 @@ impl StatementVisitor<Object> for Interpreter {
 
     fn visit_while_statement(&mut self, statement: &WhileStatement) -> Result<Object, Error> {
         let mut conditional = self.evaluate(&statement.conditional)?;
+
         while conditional.is_truthy() {
             conditional = self.evaluate(&statement.conditional)?;
             self.execute(&statement.block)?;
