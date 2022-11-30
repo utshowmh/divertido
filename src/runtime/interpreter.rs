@@ -160,6 +160,7 @@ impl ExpressionVisitor<Object> for Interpreter {
         match &expression.operator.ttype {
             TokenType::Plus => match (&left, &right) {
                 (Object::Number(x), Object::Number(y)) => Ok(Object::Number(x + y)),
+                (Object::String(x), Object::String(y)) => Ok(Object::String(x.to_string() + y)),
                 (_, _) => Err(self.error(
                     &format!("Expected 'number + number', found '{} + {}'", left, right),
                     expression.operator.line,

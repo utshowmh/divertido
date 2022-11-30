@@ -1,0 +1,6 @@
+// using strings in divertido
+
+let greeting = "hello";
+let name = "utsho";
+
+print greeting + ", " + name;

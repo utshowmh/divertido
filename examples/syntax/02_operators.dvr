@@ -12,8 +12,6 @@ print x / y;
 print (x / y) * 5;
 print (x / y) * -5;
 
-x = 69;
-y = 96;
 
 // comparison operators
 
@@ -22,6 +20,8 @@ print x > y;
 print x >= y;
 print x < y;
 print x <= y;
+
+// mutatin x and y
 
 x = true;
 y = false;
