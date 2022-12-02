@@ -244,6 +244,46 @@ impl Lexer {
                     }
                 }
 
+                '&' => {
+                    self.advance();
+                    if self.peek() == '&' {
+                        self.advance();
+                        tokens.push(Token::new(
+                            TokenType::And,
+                            &self.source[start..self.current],
+                            Object::Nil,
+                            self.line,
+                        ));
+                    } else {
+                        tokens.push(Token::new(
+                            TokenType::BitwiseAnd,
+                            &self.source[start..self.current],
+                            Object::Nil,
+                            self.line,
+                        ));
+                    }
+                }
+
+                '|' => {
+                    self.advance();
+                    if self.peek() == '|' {
+                        self.advance();
+                        tokens.push(Token::new(
+                            TokenType::Or,
+                            &self.source[start..self.current],
+                            Object::Nil,
+                            self.line,
+                        ));
+                    } else {
+                        tokens.push(Token::new(
+                            TokenType::BitwiseOr,
+                            &self.source[start..self.current],
+                            Object::Nil,
+                            self.line,
+                        ));
+                    }
+                }
+
                 peek => {
                     if peek.is_digit(10) {
                         tokens.push(self.extract_number()?);

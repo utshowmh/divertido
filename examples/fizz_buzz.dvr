@@ -1,13 +1,19 @@
-let i = 0;
-let limit = 10;
+let i = 1;
+let limit = 15;
 
-while i < limit {
-    if i % 3 == 0 {
-        print "Fizz";
-    } else if i % 5 == 0 {
+while i <= limit {
+    let fizz = i % 3 == 0;
+    let buzz = i % 5 == 0;
+
+    if fizz && buzz  {
+        print "FizzBuzz";
+    } else if fizz {
+        print "Fuzz";
+    } else if buzz {
         print "Buzz";
     } else {
         print i;
     }
+
     i = i + 1;
 }

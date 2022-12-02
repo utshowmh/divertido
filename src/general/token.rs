@@ -42,6 +42,11 @@ pub enum TokenType {
     Less,
     LessEqual,
 
+    BitwiseAnd,
+    And,
+    BitwiseOr,
+    Or,
+
     EOF,
 }
 
@@ -85,6 +90,11 @@ impl Display for TokenType {
             Self::GreaterEqual => write!(f, "GreaterEqual"),
             Self::Less => write!(f, "Less"),
             Self::LessEqual => write!(f, "LessEqual"),
+
+            Self::BitwiseAnd => write!(f, "BitwiseAnd"),
+            Self::And => write!(f, "And"),
+            Self::BitwiseOr => write!(f, "BitwiseOr"),
+            Self::Or => write!(f, "Or"),
 
             Self::EOF => write!(f, "EOF"),
         }

@@ -16,18 +16,19 @@ print (x / y) * -5;
 // comparison operators
 
 print x == y;
+print x != y;
 print x > y;
 print x >= y;
 print x < y;
 print x <= y;
 
-// mutatin x and y
+// mutating x and y
 
 x = true;
 y = false;
 
 // logical operators
 
-print x == y;
-print x != y;
+print x && y;
+print x || y;
 print !y;

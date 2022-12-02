@@ -98,11 +98,13 @@ impl StatementVisitor<Object> for Interpreter {
     }
 
     fn visit_while_statement(&mut self, statement: &WhileStatement) -> Result<Object, Error> {
-        let mut conditional = self.evaluate(&statement.conditional)?;
-
-        while conditional.is_truthy() {
-            conditional = self.evaluate(&statement.conditional)?;
-            self.execute(&statement.block)?;
+        loop {
+            let conditional = self.evaluate(&statement.conditional)?;
+            if conditional.is_truthy() {
+                self.execute(&statement.block)?;
+            } else {
+                break;
+            }
         }
 
         Ok(Object::Nil)
@@ -162,7 +164,10 @@ impl ExpressionVisitor<Object> for Interpreter {
                 (Object::Number(x), Object::Number(y)) => Ok(Object::Number(x + y)),
                 (Object::String(x), Object::String(y)) => Ok(Object::String(x.to_string() + y)),
                 (_, _) => Err(self.error(
-                    &format!("Expected 'number + number', found '{} + {}'", left, right),
+                    &format!(
+                        "Expected 'number/string + number/string', found '{} + {}'",
+                        left, right
+                    ),
                     expression.operator.line,
                 )),
             },
@@ -198,6 +203,10 @@ impl ExpressionVisitor<Object> for Interpreter {
                     expression.operator.line,
                 )),
             },
+
+            TokenType::BitwiseAnd => todo!(),
+
+            TokenType::BitwiseOr => todo!(),
 
             TokenType::EqualEqual => Ok(Object::Boolean(left == right)),
 
@@ -235,9 +244,13 @@ impl ExpressionVisitor<Object> for Interpreter {
                 )),
             },
 
+            TokenType::And => Ok(Object::Boolean(left.is_truthy() && right.is_truthy())),
+
+            TokenType::Or => Ok(Object::Boolean(left.is_truthy() || right.is_truthy())),
+
             _ => Err(self.error(
                 &format!(
-                    "Expected (+ | - | * | /), found '{}'",
+                    "Expected '+ | - | * | /', found '{}'",
                     expression.operator.lexeme
                 ),
                 expression.operator.line,

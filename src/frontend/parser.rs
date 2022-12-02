@@ -166,7 +166,35 @@ impl Parser {
     }
 
     fn expression(&mut self) -> Result<Expression, Error> {
-        self.comparison()
+        self.logical_expression()
+    }
+
+    fn logical_expression(&mut self) -> Result<Expression, Error> {
+        self.logical_or()
+    }
+
+    fn logical_or(&mut self) -> Result<Expression, Error> {
+        let mut left = self.logical_and()?;
+
+        while self.does_match(&[TokenType::Or]) {
+            let operator = self.next_token();
+            let right = self.logical_and()?;
+            left = Expression::Binary(BinaryExpression::new(left, operator, right));
+        }
+
+        Ok(left)
+    }
+
+    fn logical_and(&mut self) -> Result<Expression, Error> {
+        let mut left = self.comparison()?;
+
+        while self.does_match(&[TokenType::And]) {
+            let operator = self.next_token();
+            let right = self.comparison()?;
+            left = Expression::Binary(BinaryExpression::new(left, operator, right));
+        }
+
+        Ok(left)
     }
 
     fn comparison(&mut self) -> Result<Expression, Error> {
@@ -207,6 +235,8 @@ impl Parser {
             TokenType::Multiplication,
             TokenType::Division,
             TokenType::Modulo,
+            TokenType::BitwiseAnd,
+            TokenType::BitwiseOr,
         ]) {
             let operator = self.next_token();
             let right = self.unary()?;
