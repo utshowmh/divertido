@@ -1,0 +1,15 @@
+let fib_0 = 0;
+let fib_1 = 1;
+let fib = nil;
+let i = 0;
+
+while i < 50 {
+    fib = fib_0 + fib_1;
+    fib_0 = fib_1;
+    fib_1 = fib;
+
+    i = i + 1;
+}
+
+print "50th fibonacci number is: ";
+print fib;

@@ -287,7 +287,7 @@ impl Lexer {
                 peek => {
                     if peek.is_digit(10) {
                         tokens.push(self.extract_number()?);
-                    } else if peek.is_ascii_alphabetic() {
+                    } else if peek.is_alphabetic() || peek == '_' {
                         tokens.push(self.extract_identifier()?);
                     } else {
                         return Err(self.error(&format!("Invalid charecter '{}'", peek)));
@@ -353,7 +353,7 @@ impl Lexer {
 
     fn extract_identifier(&mut self) -> Result<Token, Error> {
         let mut identifier = String::new();
-        while self.peek().is_ascii_alphabetic() && !self.is_eof() {
+        while (self.peek().is_alphanumeric() || self.peek() == '_') && !self.is_eof() {
             identifier.push(self.peek());
             self.advance();
         }
