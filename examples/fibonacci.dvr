@@ -11,5 +11,4 @@ while i < 50 {
     i = i + 1;
 }
 
-print "50th fibonacci number is: ";
-print fib;
+print "50th fibonacci number is: ", fib;

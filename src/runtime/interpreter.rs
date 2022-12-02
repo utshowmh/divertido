@@ -111,9 +111,16 @@ impl StatementVisitor<Object> for Interpreter {
     }
 
     fn visit_print_statement(&self, statement: &PrintStatement) -> Result<Object, Error> {
-        let value = self.evaluate(&statement.value)?;
+        let mut values = Vec::new();
 
-        println!("{}", value);
+        for value in &statement.values {
+            values.push(self.evaluate(value)?);
+        }
+
+        for value in values {
+            print!("{}", value);
+        }
+        println!();
 
         Ok(Object::Nil)
     }

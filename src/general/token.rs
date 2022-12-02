@@ -31,6 +31,7 @@ pub enum TokenType {
     Division,
     Modulo,
 
+    Comma,
     Semicolon,
 
     Equal,
@@ -80,6 +81,7 @@ impl Display for TokenType {
             Self::Division => write!(f, "Division"),
             Self::Modulo => write!(f, "Modulo"),
 
+            Self::Comma => write!(f, "Comma"),
             Self::Semicolon => write!(f, "Semicolon"),
 
             Self::Equal => write!(f, "Equal"),

@@ -45,6 +45,7 @@ impl Parser {
 
     fn let_statement(&mut self) -> Result<Statement, Error> {
         self.advance();
+
         let identifier = self.consume(
             TokenType::Identifier,
             &format!(
@@ -52,6 +53,7 @@ impl Parser {
                 self.peek().lexeme
             ),
         )?;
+
         self.consume(
             TokenType::Equal,
             &format!(
@@ -59,7 +61,9 @@ impl Parser {
                 self.peek().lexeme
             ),
         )?;
+
         let value = self.expression()?;
+
         self.consume(
             TokenType::Semicolon,
             &format!(
@@ -67,6 +71,7 @@ impl Parser {
                 self.peek().lexeme
             ),
         )?;
+
         Ok(Statement::Let(LetStatement::new(identifier, value)))
     }
 
@@ -94,7 +99,14 @@ impl Parser {
 
     fn print_statement(&mut self) -> Result<Statement, Error> {
         self.advance();
-        let expression = self.expression()?;
+        let mut expressions = Vec::new();
+
+        expressions.push(self.expression()?);
+        while self.peek().ttype == TokenType::Comma {
+            self.advance();
+            expressions.push(self.expression()?);
+        }
+
         self.consume(
             TokenType::Semicolon,
             &format!(
@@ -102,7 +114,7 @@ impl Parser {
                 self.peek().lexeme
             ),
         )?;
-        Ok(Statement::Print(PrintStatement::new(expression)))
+        Ok(Statement::Print(PrintStatement::new(expressions)))
     }
 
     fn if_statement(&mut self) -> Result<Statement, Error> {

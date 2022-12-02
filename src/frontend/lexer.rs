@@ -128,6 +128,16 @@ impl Lexer {
                     ));
                 }
 
+                ',' => {
+                    self.advance();
+                    tokens.push(Token::new(
+                        TokenType::Comma,
+                        &self.source[start..self.current],
+                        Object::Nil,
+                        self.line,
+                    ));
+                }
+
                 ';' => {
                     self.advance();
                     tokens.push(Token::new(

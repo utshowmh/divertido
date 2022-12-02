@@ -146,12 +146,12 @@ impl WhileStatement {
 
 #[derive(Debug)]
 pub struct PrintStatement {
-    pub value: Expression,
+    pub values: Vec<Expression>,
 }
 
 impl PrintStatement {
-    pub fn new(value: Expression) -> Self {
-        Self { value }
+    pub fn new(values: Vec<Expression>) -> Self {
+        Self { values }
     }
 
     pub fn accept<T>(&self, visitor: &mut dyn StatementVisitor<T>) -> Result<T, Error> {
