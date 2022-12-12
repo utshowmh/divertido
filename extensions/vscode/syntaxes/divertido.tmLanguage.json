@@ -18,7 +18,10 @@
 			"include": "#digits"
 		},
 		{
-			"include": "#strings"
+			"include": "#single_qouted_strings"
+		},
+		{
+			"include": "#double_qouted_strings"
 		}
 	],
 	"repository": {
@@ -73,10 +76,16 @@
 				}
 			]
 		},
-		"strings": {
+		"double_qouted_strings": {
 			"name": "string.quoted.double.dvr",
 			"begin": "\"",
 			"end": "\"",
+			"patterns": []
+		},
+		"single_qouted_strings": {
+			"name": "string.quoted.double.dvr",
+			"begin": "'",
+			"end": "'",
 			"patterns": []
 		},
 		"comments": {

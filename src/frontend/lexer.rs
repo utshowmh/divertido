@@ -132,7 +132,17 @@ impl Lexer {
                 }
                 '"' => {
                     self.advance();
-                    let string = self.extract_string()?;
+                    let string = self.extract_string('"')?;
+                    tokens.push(Token::new(
+                        TokenType::String,
+                        &self.source[start..self.current],
+                        Object::String(string),
+                        self.line,
+                    ));
+                }
+                '\'' => {
+                    self.advance();
+                    let string = self.extract_string('\'')?;
                     tokens.push(Token::new(
                         TokenType::String,
                         &self.source[start..self.current],
@@ -317,9 +327,9 @@ impl Lexer {
         }
     }
 
-    fn extract_string(&mut self) -> Result<String, Error> {
+    fn extract_string(&mut self, terminator: char) -> Result<String, Error> {
         let mut string = String::new();
-        while self.peek().is_ascii() && !self.is_eof() && self.peek() != '"' {
+        while self.peek().is_ascii() && !self.is_eof() && self.peek() != terminator {
             string.push(self.peek());
             self.advance();
         }
