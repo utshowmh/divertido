@@ -10,9 +10,7 @@ pub struct Lexer {
     source: String,
     source_as_u8: Vec<u8>,
     source_len: usize,
-
     keywords: HashMap<String, TokenType>,
-
     line: usize,
     current: usize,
 }
@@ -23,9 +21,7 @@ impl Lexer {
             source: source.to_string(),
             source_as_u8: source.as_bytes().to_vec(),
             source_len: source.len(),
-
             keywords: HashMap::new(),
-
             line: 1,
             current: 0,
         }
@@ -34,20 +30,16 @@ impl Lexer {
     pub fn lex(&mut self) -> Result<Vec<Token>, Error> {
         let mut tokens = Vec::new();
         self.init_keywords();
-
         while !self.is_eof() {
             let start = self.current;
-
             match self.peek() {
                 ' ' | '\t' | '\r' => {
                     self.advance();
                 }
-
                 '\n' => {
                     self.advance();
                     self.line += 1
                 }
-
                 '(' => {
                     self.advance();
                     tokens.push(Token::new(
@@ -57,7 +49,6 @@ impl Lexer {
                         self.line,
                     ));
                 }
-
                 ')' => {
                     self.advance();
                     tokens.push(Token::new(
@@ -67,7 +58,6 @@ impl Lexer {
                         self.line,
                     ));
                 }
-
                 '{' => {
                     self.advance();
                     tokens.push(Token::new(
@@ -77,7 +67,6 @@ impl Lexer {
                         self.line,
                     ));
                 }
-
                 '}' => {
                     self.advance();
                     tokens.push(Token::new(
@@ -87,7 +76,6 @@ impl Lexer {
                         self.line,
                     ));
                 }
-
                 '+' => {
                     self.advance();
                     tokens.push(Token::new(
@@ -97,7 +85,6 @@ impl Lexer {
                         self.line,
                     ));
                 }
-
                 '-' => {
                     self.advance();
                     tokens.push(Token::new(
@@ -107,7 +94,6 @@ impl Lexer {
                         self.line,
                     ));
                 }
-
                 '*' => {
                     self.advance();
                     tokens.push(Token::new(
@@ -117,7 +103,6 @@ impl Lexer {
                         self.line,
                     ));
                 }
-
                 '%' => {
                     self.advance();
                     tokens.push(Token::new(
@@ -127,7 +112,6 @@ impl Lexer {
                         self.line,
                     ));
                 }
-
                 ',' => {
                     self.advance();
                     tokens.push(Token::new(
@@ -137,7 +121,6 @@ impl Lexer {
                         self.line,
                     ));
                 }
-
                 ';' => {
                     self.advance();
                     tokens.push(Token::new(
@@ -147,7 +130,6 @@ impl Lexer {
                         self.line,
                     ));
                 }
-
                 '"' => {
                     self.advance();
                     let string = self.extract_string()?;
@@ -158,7 +140,6 @@ impl Lexer {
                         self.line,
                     ));
                 }
-
                 '/' => {
                     self.advance();
                     if self.peek() == '/' {
@@ -173,7 +154,6 @@ impl Lexer {
                         ));
                     }
                 }
-
                 '=' => {
                     self.advance();
                     if self.peek() == '=' {
@@ -193,7 +173,6 @@ impl Lexer {
                         ));
                     }
                 }
-
                 '!' => {
                     self.advance();
                     if self.peek() == '=' {
@@ -213,7 +192,6 @@ impl Lexer {
                         ));
                     }
                 }
-
                 '>' => {
                     self.advance();
                     if self.peek() == '=' {
@@ -233,7 +211,6 @@ impl Lexer {
                         ));
                     }
                 }
-
                 '<' => {
                     self.advance();
                     if self.peek() == '=' {
@@ -253,7 +230,6 @@ impl Lexer {
                         ));
                     }
                 }
-
                 '&' => {
                     self.advance();
                     if self.peek() == '&' {
@@ -273,7 +249,6 @@ impl Lexer {
                         ));
                     }
                 }
-
                 '|' => {
                     self.advance();
                     if self.peek() == '|' {
@@ -293,7 +268,6 @@ impl Lexer {
                         ));
                     }
                 }
-
                 peek => {
                     if peek.is_digit(10) {
                         tokens.push(self.extract_number()?);
@@ -305,9 +279,7 @@ impl Lexer {
                 }
             }
         }
-
         tokens.push(Token::new(TokenType::EOF, "\0", Object::Nil, self.line));
-
         Ok(tokens)
     }
 
@@ -333,7 +305,6 @@ impl Lexer {
             number_str.push(self.peek());
             self.advance();
         }
-
         if let Ok(number) = number_str.parse() {
             Ok(Token::new(
                 TokenType::Number,
@@ -352,7 +323,6 @@ impl Lexer {
             string.push(self.peek());
             self.advance();
         }
-
         if self.is_eof() {
             Err(self.error("Unterminated string"))
         } else {
@@ -414,11 +384,9 @@ impl Lexer {
         self.keywords.insert("if".to_string(), TokenType::If);
         self.keywords.insert("else".to_string(), TokenType::Else);
         self.keywords.insert("while".to_string(), TokenType::While);
-
         self.keywords.insert("true".to_string(), TokenType::True);
         self.keywords.insert("false".to_string(), TokenType::False);
         self.keywords.insert("nil".to_string(), TokenType::Nil);
-
         self.keywords.insert("print".to_string(), TokenType::Print);
     }
 }

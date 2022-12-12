@@ -1,7 +1,7 @@
 // conditional statements in divertido
 
-let x = nil;
-let y = nil;
+let x;
+let y;
 
 if x {
     print "x";

@@ -4,6 +4,7 @@ use crate::general::{
         BinaryExpression, Expression, GroupingExpression, LiteralExpression, UnaryExpression,
         VariableExpression,
     },
+    object::Object,
     statement::{
         AssignmentExpression, BlockStatement, ExpressionStatement, IfStatement, LetStatement,
         PrintStatement, Statement, WhileStatement,
@@ -23,11 +24,9 @@ impl Parser {
 
     pub fn parse(&mut self) -> Result<Vec<Statement>, Error> {
         let mut statements = Vec::new();
-
         while !self.is_eof() {
             statements.push(self.statement()?);
         }
-
         Ok(statements)
     }
 
@@ -45,7 +44,6 @@ impl Parser {
 
     fn let_statement(&mut self) -> Result<Statement, Error> {
         self.advance();
-
         let identifier = self.consume(
             TokenType::Identifier,
             &format!(
@@ -53,17 +51,11 @@ impl Parser {
                 self.peek().lexeme
             ),
         )?;
-
-        self.consume(
-            TokenType::Equal,
-            &format!(
-                "Expected '=' after identifier, found '{}'",
-                self.peek().lexeme
-            ),
-        )?;
-
-        let value = self.expression()?;
-
+        let mut value = Expression::Literal(LiteralExpression::new(Object::Nil));
+        if self.does_match(&[TokenType::Equal]) {
+            self.advance();
+            value = self.expression()?;
+        }
         self.consume(
             TokenType::Semicolon,
             &format!(
@@ -71,7 +63,6 @@ impl Parser {
                 self.peek().lexeme
             ),
         )?;
-
         Ok(Statement::Let(LetStatement::new(identifier, value)))
     }
 
@@ -100,13 +91,11 @@ impl Parser {
     fn print_statement(&mut self) -> Result<Statement, Error> {
         self.advance();
         let mut expressions = Vec::new();
-
         expressions.push(self.expression()?);
         while self.peek().ttype == TokenType::Comma {
             self.advance();
             expressions.push(self.expression()?);
         }
-
         self.consume(
             TokenType::Semicolon,
             &format!(
@@ -122,7 +111,6 @@ impl Parser {
         let conditional = self.expression()?;
         let if_block = self.block_statement()?;
         let mut else_block = None;
-
         if self.peek().ttype == TokenType::Else {
             self.advance();
             if self.peek().ttype == TokenType::If {
@@ -131,7 +119,6 @@ impl Parser {
                 else_block = Some(self.block_statement()?);
             }
         }
-
         Ok(Statement::If(IfStatement::new(
             conditional,
             if_block,
@@ -149,11 +136,9 @@ impl Parser {
     fn block_statement(&mut self) -> Result<Statement, Error> {
         self.advance();
         let mut statements = Vec::new();
-
         while !self.does_match(&[TokenType::CloseCurly]) && !self.is_eof() {
             statements.push(self.statement()?);
         }
-
         self.consume(
             TokenType::CloseCurly,
             &format!(
@@ -161,7 +146,6 @@ impl Parser {
                 self.peek().lexeme
             ),
         )?;
-
         Ok(Statement::Block(BlockStatement::new(statements)))
     }
 
@@ -187,31 +171,26 @@ impl Parser {
 
     fn logical_or(&mut self) -> Result<Expression, Error> {
         let mut left = self.logical_and()?;
-
         while self.does_match(&[TokenType::Or]) {
             let operator = self.next_token();
             let right = self.logical_and()?;
             left = Expression::Binary(BinaryExpression::new(left, operator, right));
         }
-
         Ok(left)
     }
 
     fn logical_and(&mut self) -> Result<Expression, Error> {
         let mut left = self.comparison()?;
-
         while self.does_match(&[TokenType::And]) {
             let operator = self.next_token();
             let right = self.comparison()?;
             left = Expression::Binary(BinaryExpression::new(left, operator, right));
         }
-
         Ok(left)
     }
 
     fn comparison(&mut self) -> Result<Expression, Error> {
         let mut left = self.term()?;
-
         while self.does_match(&[
             TokenType::BangEqual,
             TokenType::EqualEqual,
@@ -224,25 +203,21 @@ impl Parser {
             let right = self.term()?;
             left = Expression::Binary(BinaryExpression::new(left, operator, right));
         }
-
         Ok(left)
     }
 
     fn term(&mut self) -> Result<Expression, Error> {
         let mut left = self.factor()?;
-
         while self.does_match(&[TokenType::Plus, TokenType::Minus]) {
             let operator = self.next_token();
             let right = self.factor()?;
             left = Expression::Binary(BinaryExpression::new(left, operator, right));
         }
-
         Ok(left)
     }
 
     fn factor(&mut self) -> Result<Expression, Error> {
         let mut left = self.unary()?;
-
         while self.does_match(&[
             TokenType::Multiplication,
             TokenType::Division,
@@ -254,7 +229,6 @@ impl Parser {
             let right = self.unary()?;
             left = Expression::Binary(BinaryExpression::new(left, operator, right))
         }
-
         Ok(left)
     }
 
@@ -274,7 +248,6 @@ impl Parser {
 
     fn primary(&mut self) -> Result<Expression, Error> {
         let current_token = self.peek();
-
         if self.does_match(&[
             TokenType::Number,
             TokenType::String,

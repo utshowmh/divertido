@@ -30,7 +30,6 @@ impl Interpreter {
         for statement in &statements {
             self.execute(statement)?;
         }
-
         Ok(())
     }
 
@@ -54,9 +53,7 @@ impl StatementVisitor<Object> for Interpreter {
 
     fn visit_let_statement(&mut self, statement: &LetStatement) -> Result<Object, Error> {
         let value = self.evaluate(&statement.value)?;
-
         self.environment.set(&statement.identifier, value);
-
         Ok(Object::Nil)
     }
 
@@ -65,7 +62,6 @@ impl StatementVisitor<Object> for Interpreter {
         statement: &AssignmentExpression,
     ) -> Result<Object, Error> {
         let value = self.evaluate(&statement.value)?;
-
         match self.environment.get(&statement.identifier) {
             Ok(_) => {
                 self.environment.set(&statement.identifier, value);
@@ -79,13 +75,11 @@ impl StatementVisitor<Object> for Interpreter {
         for statement in &statement.statements {
             self.execute(&statement)?;
         }
-
         Ok(Object::Nil)
     }
 
     fn visit_if_statement(&mut self, statement: &IfStatement) -> Result<Object, Error> {
         let conditional = self.evaluate(&statement.conditional)?;
-
         if conditional.is_truthy() {
             self.execute(&statement.if_block)?;
         } else {
@@ -93,7 +87,6 @@ impl StatementVisitor<Object> for Interpreter {
                 self.execute(else_block)?;
             }
         }
-
         Ok(Object::Nil)
     }
 
@@ -106,22 +99,18 @@ impl StatementVisitor<Object> for Interpreter {
                 break;
             }
         }
-
         Ok(Object::Nil)
     }
 
     fn visit_print_statement(&self, statement: &PrintStatement) -> Result<Object, Error> {
         let mut values = Vec::new();
-
         for value in &statement.values {
             values.push(self.evaluate(value)?);
         }
-
         for value in values {
             print!("{}", value);
         }
         println!();
-
         Ok(Object::Nil)
     }
 }
@@ -137,7 +126,6 @@ impl ExpressionVisitor<Object> for Interpreter {
 
     fn visit_unary_expression(&self, expression: &UnaryExpression) -> Result<Object, Error> {
         let right = self.evaluate(&expression.right)?;
-
         match &expression.operator.ttype {
             TokenType::Minus => match &right {
                 Object::Number(number) => Ok(Object::Number(number * -1.)),
@@ -146,7 +134,6 @@ impl ExpressionVisitor<Object> for Interpreter {
                     expression.operator.line,
                 )),
             },
-
             TokenType::Bang => match &right {
                 Object::Boolean(boolean) => Ok(Object::Boolean(!boolean)),
                 _ => Err(self.error(
@@ -154,7 +141,6 @@ impl ExpressionVisitor<Object> for Interpreter {
                     expression.operator.line,
                 )),
             },
-
             _ => Err(self.error(
                 &format!("Expected '-', found '{}", expression.operator.lexeme),
                 expression.operator.line,
@@ -165,7 +151,6 @@ impl ExpressionVisitor<Object> for Interpreter {
     fn visit_binary_expression(&self, expression: &BinaryExpression) -> Result<Object, Error> {
         let left = self.evaluate(&expression.left)?;
         let right = self.evaluate(&expression.right)?;
-
         match &expression.operator.ttype {
             TokenType::Plus => match (&left, &right) {
                 (Object::Number(x), Object::Number(y)) => Ok(Object::Number(x + y)),
@@ -178,7 +163,6 @@ impl ExpressionVisitor<Object> for Interpreter {
                     expression.operator.line,
                 )),
             },
-
             TokenType::Minus => match (&left, &right) {
                 (Object::Number(x), Object::Number(y)) => Ok(Object::Number(x - y)),
                 (_, _) => Err(self.error(
@@ -186,7 +170,6 @@ impl ExpressionVisitor<Object> for Interpreter {
                     expression.operator.line,
                 )),
             },
-
             TokenType::Multiplication => match (&left, &right) {
                 (Object::Number(x), Object::Number(y)) => Ok(Object::Number(x * y)),
                 (_, _) => Err(self.error(
@@ -194,7 +177,6 @@ impl ExpressionVisitor<Object> for Interpreter {
                     expression.operator.line,
                 )),
             },
-
             TokenType::Division => match (&left, &right) {
                 (Object::Number(x), Object::Number(y)) => Ok(Object::Number(x / y)),
                 (_, _) => Err(self.error(
@@ -202,7 +184,6 @@ impl ExpressionVisitor<Object> for Interpreter {
                     expression.operator.line,
                 )),
             },
-
             TokenType::Modulo => match (&left, &right) {
                 (Object::Number(x), Object::Number(y)) => Ok(Object::Number(x % y)),
                 (_, _) => Err(self.error(
@@ -257,7 +238,7 @@ impl ExpressionVisitor<Object> for Interpreter {
 
             _ => Err(self.error(
                 &format!(
-                    "Expected '+ | - | * | /', found '{}'",
+                    "Expected a Binary Operator, found '{}'",
                     expression.operator.lexeme
                 ),
                 expression.operator.line,

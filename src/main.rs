@@ -26,6 +26,7 @@ fn run() -> Result<(), Error> {
         1 => {
             repl()?;
         }
+
         2 => match args[1].as_str() {
             "repl" => {
                 repl()?;
@@ -51,6 +52,7 @@ fn run() -> Result<(), Error> {
                 }
             }
         },
+
         _ => {
             print_help(Some("Invalid number of commands"));
         }

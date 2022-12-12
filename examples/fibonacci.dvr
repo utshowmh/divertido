@@ -1,6 +1,6 @@
 let fib_0 = 0;
 let fib_1 = 1;
-let fib = nil;
+let fib;
 let i = 0;
 
 while i < 50 {
